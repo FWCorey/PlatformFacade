@@ -34,7 +34,7 @@ namespace PlatformFacade.Examples
             var localUser = _userService.GetLocalUser();
             if (localUser?.AuthenticationStatus == UserAuthenticationStatus.Authenticated)
             {
-                Console.WriteLine($"User {localUser.Name} is already authenticated");
+                Debug.Log($"User {localUser.Name} is already authenticated");
                 return;
             }
 
@@ -42,7 +42,7 @@ namespace PlatformFacade.Examples
             var authResult = await _userService.AuthenticateLocalUserAsync();
             if (authResult.IsSuccess)
             {
-                Console.WriteLine($"Successfully authenticated user: {authResult.Value.Name}");
+                Debug.Log($"Successfully authenticated user: {authResult.Value.Name}");
                 
                 // Chain operations using Railway Oriented Design
                 await _userService.AuthenticateLocalUserAsync()
@@ -51,7 +51,7 @@ namespace PlatformFacade.Examples
             }
             else
             {
-                Console.WriteLine($"Authentication failed: {authResult.Error}");
+                Debug.Log($"Authentication failed: {authResult.Error}");
             }
         }
 
@@ -64,17 +64,17 @@ namespace PlatformFacade.Examples
             if (friendsListResult.IsSuccess)
             {
                 var friendsList = friendsListResult.Value;
-                Console.WriteLine($"Loaded {friendsList.Count} friends");
+                Debug.Log($"Loaded {friendsList.Count} friends");
                 
                 // Get online friends (authenticated users)
                 var onlineFriends = friendsList.GetFriendsByStatus(true);
-                Console.WriteLine($"Online friends: {string.Join(", ", onlineFriends.Select(f => f.Name))}");
+                Debug.Log($"Online friends: {string.Join(", ", onlineFriends.Select(f => f.Name))}");
                 
                 return new Result<IFriendsList, string>(friendsList);
             }
             else
             {
-                Console.WriteLine($"Failed to load friends list: {friendsListResult.Error}");
+                Debug.Log($"Failed to load friends list: {friendsListResult.Error}");
                 return new Result<IFriendsList, string>(friendsListResult.Error);
             }
         }
@@ -89,7 +89,7 @@ namespace PlatformFacade.Examples
             if (thumbnailResult.IsSuccess)
             {
                 var thumbnail = thumbnailResult.Value;
-                Console.WriteLine($"Loaded thumbnail: {thumbnail.width}x{thumbnail.height}");
+                Debug.Log($"Loaded thumbnail: {thumbnail.width}x{thumbnail.height}");
             }
 
             // Get native resolution portrait
@@ -97,12 +97,12 @@ namespace PlatformFacade.Examples
             if (nativePortraitResult.IsSuccess)
             {
                 var nativePortrait = nativePortraitResult.Value;
-                Console.WriteLine($"Loaded native portrait: {nativePortrait.width}x{nativePortrait.height}");
+                Debug.Log($"Loaded native portrait: {nativePortrait.width}x{nativePortrait.height}");
                 return new Result<Texture2D, string>(nativePortrait);
             }
             else
             {
-                Console.WriteLine($"Failed to load portrait: {nativePortraitResult.Error}");
+                Debug.Log($"Failed to load portrait: {nativePortraitResult.Error}");
                 return new Result<Texture2D, string>(nativePortraitResult.Error);
             }
         }
@@ -116,11 +116,11 @@ namespace PlatformFacade.Examples
             if (friendThumbnailResult.IsSuccess)
             {
                 var friendThumbnail = friendThumbnailResult.Value;
-                Console.WriteLine($"Loaded friend's thumbnail: {friendThumbnail.width}x{friendThumbnail.height}");
+                Debug.Log($"Loaded friend's thumbnail: {friendThumbnail.width}x{friendThumbnail.height}");
             }
             else
             {
-                Console.WriteLine($"Failed to load friend's portrait: {friendThumbnailResult.Error}");
+                Debug.Log($"Failed to load friend's portrait: {friendThumbnailResult.Error}");
             }
         }
 
@@ -132,12 +132,12 @@ namespace PlatformFacade.Examples
             await _userService.AuthenticateLocalUserAsync()
                 .Then(async user => 
                 {
-                    Console.WriteLine($"Authenticated as: {user.Name}");
+                    Debug.Log($"Authenticated as: {user.Name}");
                     return await _userService.GetFriendsListAsync();
                 })
                 .Then(async friendsList => 
                 {
-                    Console.WriteLine($"Loaded {friendsList.Count} friends");
+                    Debug.Log($"Loaded {friendsList.Count} friends");
                     return await _userService.GetUserPortraitThumbnailAsync();
                 });
         }
@@ -147,7 +147,7 @@ namespace PlatformFacade.Examples
         /// </summary>
         private void OnAuthenticationStatusChanged(UserAuthenticationStatus status)
         {
-            Console.WriteLine($"Authentication status changed: {status}");
+            Debug.Log($"Authentication status changed: {status}");
             
             switch (status)
             {
@@ -159,12 +159,12 @@ namespace PlatformFacade.Examples
                     
                 case UserAuthenticationStatus.NotAuthenticated:
                     // User signed out - clear cached data
-                    Console.WriteLine("User signed out, clearing cached data");
+                    Debug.Log("User signed out, clearing cached data");
                     break;
                     
                 case UserAuthenticationStatus.Authenticating:
                     // Show loading indicator
-                    Console.WriteLine("Authentication in progress...");
+                    Debug.Log("Authentication in progress...");
                     break;
             }
         }
@@ -174,11 +174,11 @@ namespace PlatformFacade.Examples
         /// </summary>
         private void OnFriendsListUpdated(IFriendsList friendsList)
         {
-            Console.WriteLine($"Friendlist updated: {friendsList.Count} friends");
+            Debug.Log($"Friendlist updated: {friendsList.Count} friends");
             
             // Update UI with new friendlist
             var onlineFriends = friendsList.GetFriendsByStatus(true);
-            Console.WriteLine($"{onlineFriends.Count()} friends are online");
+            Debug.Log($"{onlineFriends.Count()} friends are online");
         }
 
         /// <summary>
