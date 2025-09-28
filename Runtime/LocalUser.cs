@@ -19,6 +19,11 @@ namespace PlatformFacade
         /// The unique identifier for the user
         /// </summary>
         public ulong UserID { get; }
+        
+        /// <summary>
+        /// The authentication status of the user
+        /// </summary>
+        public UserAuthenticationStatus AuthenticationStatus { get; }
 
         /// <summary>
         /// Initializes a new instance of the LocalUser struct
@@ -26,11 +31,13 @@ namespace PlatformFacade
         /// <param name="name">The display name of the user</param>
         /// <param name="gamerTag">The platform-specific gamertag of the user</param>
         /// <param name="userID">The unique identifier for the user</param>
-        public LocalUser(string name, string gamerTag, ulong userID)
+        /// <param name="authenticationStatus">The authentication status of the user</param>
+        public LocalUser(string name, string gamerTag, ulong userID, UserAuthenticationStatus authenticationStatus)
         {
             Name = name;
             GamerTag = gamerTag;
             UserID = userID;
+            AuthenticationStatus = authenticationStatus;
         }
     }
 }

@@ -16,5 +16,10 @@ namespace PlatformFacade
         /// The unique identifier for the user
         /// </summary>
         ulong UserID { get; }
+        
+        /// <summary>
+        /// The authentication status of the user
+        /// </summary>
+        UserAuthenticationStatus AuthenticationStatus { get; }
     }
 }
