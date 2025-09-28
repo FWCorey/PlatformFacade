@@ -37,8 +37,9 @@ PlatformFacade is a Unity package that provides a generic platform facade to abs
 
 ### Unity-Specific Guidelines
 - Design interfaces to be platform-agnostic
-- Avoid Unity-specific types in public interfaces when possible
+- Avoid Unity Package specific types in public interfaces when possible
 - Consider async/await patterns for platform operations that may take time
+- Use Railway Oriented Design for methods that may need to be chained
 - Use Unity's serialization system appropriately for data structures
 
 ## Documentation Standards
@@ -91,10 +92,9 @@ When adding new platform services:
 5. Update the main IPlatform interface if the service should be exposed there
 
 ### Modifying Existing Interfaces
-1. Consider backward compatibility
-2. Update XML documentation
-3. Review all existing implementations (when they exist)
-4. Add appropriate deprecation warnings if needed
+1. Update XML documentation
+2. Review all existing implementations (when they exist)
+3. Add appropriate deprecation warnings if needed
 
 ## Package Management
 
@@ -102,6 +102,11 @@ When adding new platform services:
 - Target Unity 2020.1+ as specified in package.json
 - Keep the assembly definition file updated with appropriate references
 - Avoid external dependencies when possible to maintain simplicity
+
+### Assembly Organization
+- The Editor implementation should not be referenced by the Runtime assembly and should have its own assembly
+- Windows Standalone and Mac Standalone implementations should have their own separate assemblies
+- Keep platform-specific implementations in separate assemblies from the core runtime interfaces
 
 ## Contribution Guidelines
 
