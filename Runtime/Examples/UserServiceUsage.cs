@@ -66,9 +66,10 @@ namespace PlatformFacade.Examples
                 var friendsList = friendsListResult.Value;
                 Debug.Log($"Loaded {friendsList.Count} friends");
                 
-                // Get online friends (authenticated users)
-                var onlineFriends = friendsList.GetFriendsByStatus(true);
-                Debug.Log($"Online friends: {string.Join(", ", onlineFriends.Select(f => f.Name))}");
+                // Get online friends (authenticated users) - non-allocating approach
+                var onlineFriends = new List<IUser>();
+                friendsList.GetFriendsByStatus(true, onlineFriends);
+                Debug.Log($"Online friends: {onlineFriends.Count}");
                 
                 return new Result<IFriendsList, string>(friendsList);
             }
@@ -179,8 +180,9 @@ namespace PlatformFacade.Examples
         {
             Debug.Log($"Friendlist updated: {friendsList.Count} friends");
             
-            // Update UI with new friendlist
-            var onlineFriends = friendsList.GetFriendsByStatus(true);
+            // Update UI with new friendlist - non-allocating approach
+            var onlineFriends = new List<IUser>();
+            friendsList.GetFriendsByStatus(true, onlineFriends);
             Debug.Log($"{onlineFriends.Count} friends are online");
         }
 
