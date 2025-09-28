@@ -4,6 +4,8 @@
 
 PlatformFacade is a Unity package that provides a generic platform facade to abstract platform SDKs from Unity projects. This library implements the Facade design pattern to create a unified interface for various gaming platform services like user authentication, leaderboards, multiplayer, storage, and overlays.
 
+The package uses Railway Oriented Design for async operations, which is a functional programming approach that chains operations together while gracefully handling success and failure paths. This pattern helps create more robust and composable async workflows by explicitly handling both happy path results and error conditions in a linear, readable manner.
+
 ## Project Structure
 
 - **Runtime/**: Contains the main source code
@@ -29,7 +31,12 @@ PlatformFacade is a Unity package that provides a generic platform facade to abs
 ## Code Style Guidelines
 
 ### C# Conventions
-- Follow standard C# naming conventions (PascalCase for public members, camelCase for private fields)
+- Follow explicit C# naming conventions:
+  - **PascalCase** for public members (methods, properties, classes, interfaces)
+  - **_camelCase with underscore prefix** for private fields
+  - **camelCase** for local variables and parameters
+  - **ALL_CAPS** for constants
+- All Unity inspector exposed serialized fields should be private
 - Use explicit access modifiers
 - Include XML documentation comments for all public APIs
 - Use `var` only when the type is obvious from the right side of the assignment
