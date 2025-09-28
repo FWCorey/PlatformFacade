@@ -10,17 +10,12 @@ namespace PlatformFacade
         /// <summary>
         /// The unique identifier for this leaderboard
         /// </summary>
-        string LeaderboardID { get; }
+        ulong LeaderboardID { get; }
         
         /// <summary>
         /// The display name of this leaderboard
         /// </summary>
         string DisplayName { get; }
-        
-        /// <summary>
-        /// The sort order used for this leaderboard
-        /// </summary>
-        LeaderboardSortOrder SortOrder { get; }
         
         /// <summary>
         /// Gets a leaderboard entry by rank position
