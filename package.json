@@ -1,0 +1,18 @@
+{
+  "name": "com.fwcorey.platformfacade",
+  "version": "1.0.0",
+  "displayName": "Platform Facade",
+  "description": "A generic Platform facade to abstract platform SDKs from your Unity projects",
+  "unity": "2020.1",
+  "author": {
+    "name": "FWCorey",
+    "url": "https://github.com/FWCorey"
+  },
+  "keywords": [
+    "platform",
+    "facade",
+    "sdk",
+    "unity",
+    "interface"
+  ]
+}
