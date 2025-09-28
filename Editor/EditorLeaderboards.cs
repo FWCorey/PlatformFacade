@@ -31,6 +31,7 @@ namespace PlatformFacade.Editor
         public EditorLeaderboards(EditorPlatformSettings settings)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _leaderboards = new ConcurrentDictionary<ulong, EditorLeaderboard>();
             InitializeMockLeaderboards();
         }
 
