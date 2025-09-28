@@ -6,7 +6,7 @@ namespace PlatformFacade.Editor
     /// <summary>
     /// Example usage of EditorPlatform for testing and development in Unity Editor
     /// </summary>
-    public class EditorPlatformExample : MonoBehaviour
+    public class EditorPlatformExample : MonoBehaviour, IPlatformInitializer
     {
         [SerializeField] private EditorPlatformSettings _settings;
         
