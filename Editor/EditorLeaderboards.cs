@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace PlatformFacade.Editor
     public class EditorLeaderboards : ILeaderboards
     {
         private readonly EditorPlatformSettings _settings;
-        private volatile Dictionary<ulong, EditorLeaderboard> _leaderboards;
+        private readonly ConcurrentDictionary<ulong, EditorLeaderboard> _leaderboards;
 
         /// <summary>
         /// Event fired when a leaderboard is updated with new scores
@@ -190,7 +191,7 @@ namespace PlatformFacade.Editor
 
         private void InitializeMockLeaderboards()
         {
-            _leaderboards = new Dictionary<ulong, EditorLeaderboard>();
+            _leaderboards = new ConcurrentDictionary<ulong, EditorLeaderboard>();
 
             // Create a sample leaderboard
             var sampleLeaderboard = new EditorLeaderboard(1001, "High Scores");
