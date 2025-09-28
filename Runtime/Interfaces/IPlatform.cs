@@ -21,5 +21,10 @@ namespace PlatformFacade
         /// Gets the storage service for managing platform-specific data persistence
         /// </summary>
         IStorage Storage { get; }
+        
+        /// <summary>
+        /// Gets the leaderboards service for managing leaderboard functionality
+        /// </summary>
+        ILeaderboards Leaderboards { get; }
     }
 }
