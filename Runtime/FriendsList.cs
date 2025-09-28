@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PlatformFacade
 {
@@ -22,7 +21,14 @@ namespace PlatformFacade
         /// <param name="friends">The collection of friends</param>
         public FriendsList(IEnumerable<IUser> friends = null)
         {
-            _friends = new List<IUser>(friends ?? Enumerable.Empty<IUser>());
+            _friends = new List<IUser>();
+            if (friends != null)
+            {
+                foreach (var friend in friends)
+                {
+                    _friends.Add(friend);
+                }
+            }
         }
 
         /// <summary>
@@ -32,7 +38,14 @@ namespace PlatformFacade
         /// <returns>The friend if found, null otherwise</returns>
         public IUser GetFriend(ulong userID)
         {
-            return _friends.FirstOrDefault(f => f.UserID == userID);
+            for (int i = 0; i < _friends.Count; i++)
+            {
+                if (_friends[i].UserID == userID)
+                {
+                    return _friends[i];
+                }
+            }
+            return null;
         }
 
         /// <summary>

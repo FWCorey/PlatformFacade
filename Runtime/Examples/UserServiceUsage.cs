@@ -153,8 +153,11 @@ namespace PlatformFacade.Examples
             {
                 case UserAuthenticationStatus.Authenticated:
                     // User successfully authenticated - load additional data
-                    _ = LoadFriendsListAsync();
-                    _ = LoadUserPortraitAsync();
+                    _ = Task.Run(async () =>
+                    {
+                        await LoadFriendsListAsync();
+                        await LoadUserPortraitAsync();
+                    });
                     break;
                     
                 case UserAuthenticationStatus.NotAuthenticated:
