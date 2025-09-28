@@ -25,7 +25,7 @@ namespace PlatformFacade.Examples
         /// <summary>
         /// Example: Submit a high score using Railway Oriented Design
         /// </summary>
-        public async Task SubmitHighScoreAsync(string leaderboardID, long score)
+        public async Task SubmitHighScoreAsync(ulong leaderboardID, long score)
         {
             var result = await _leaderboards.SubmitScoreAsync(leaderboardID, score);
             
@@ -42,7 +42,7 @@ namespace PlatformFacade.Examples
         /// <summary>
         /// Example: Load and display global leaderboard using Railway Oriented Design
         /// </summary>
-        public async Task<Result<ILeaderboard, string>> LoadGlobalLeaderboardAsync(string leaderboardID)
+        public async Task<Result<ILeaderboard, string>> LoadGlobalLeaderboardAsync(ulong leaderboardID)
         {
             return await _leaderboards.GetGlobalLeaderboardAsync(leaderboardID, 10);
         }
@@ -50,7 +50,7 @@ namespace PlatformFacade.Examples
         /// <summary>
         /// Example: Get user's current rank and score using Railway Oriented Design
         /// </summary>
-        public async Task<Result<ILeaderboardEntry, string>> GetUserRankAsync(string leaderboardID)
+        public async Task<Result<ILeaderboardEntry, string>> GetUserRankAsync(ulong leaderboardID)
         {
             return await _leaderboards.GetUserEntryAsync(leaderboardID);
         }
@@ -58,7 +58,7 @@ namespace PlatformFacade.Examples
         /// <summary>
         /// Example: Load friends leaderboard using Railway Oriented Design
         /// </summary>
-        public async Task LoadFriendsLeaderboardAsync(string leaderboardID)
+        public async Task LoadFriendsLeaderboardAsync(ulong leaderboardID)
         {
             var result = await _leaderboards.GetFriendsLeaderboardAsync(leaderboardID, 20);
             
@@ -81,7 +81,7 @@ namespace PlatformFacade.Examples
         /// <summary>
         /// Example: Chain multiple leaderboard operations using Railway Oriented Design
         /// </summary>
-        public async Task CompleteLeaderboardWorkflowAsync(string leaderboardID, long newScore)
+        public async Task CompleteLeaderboardWorkflowAsync(ulong leaderboardID, long newScore)
         {
             await _leaderboards.SubmitScoreAsync(leaderboardID, newScore)
                 .Then(async success => 
@@ -99,7 +99,7 @@ namespace PlatformFacade.Examples
         /// <summary>
         /// Example: Load leaderboard entries within a specific rank range
         /// </summary>
-        public async Task LoadTopPlayersAsync(string leaderboardID)
+        public async Task LoadTopPlayersAsync(ulong leaderboardID)
         {
             var result = await _leaderboards.GetLeaderboardByRangeAsync(leaderboardID, 1, 10);
             
@@ -122,15 +122,15 @@ namespace PlatformFacade.Examples
         /// <summary>
         /// Event handler for leaderboard updates
         /// </summary>
-        private void OnLeaderboardUpdated(string leaderboardID)
+        private void OnLeaderboardUpdated(ILeaderboard leaderboard)
         {
-            Debug.Log($"Leaderboard {leaderboardID} has been updated");
+            Debug.Log($"Leaderboard {leaderboard.LeaderboardID} has been updated");
         }
 
         /// <summary>
         /// Event handler for score updates
         /// </summary>
-        private void OnScoreUpdated(string leaderboardID, long newScore)
+        private void OnScoreUpdated(ulong leaderboardID, long newScore)
         {
             Debug.Log($"Your score on {leaderboardID} has been updated to {newScore}");
         }
