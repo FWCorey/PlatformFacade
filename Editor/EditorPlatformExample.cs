@@ -12,12 +12,14 @@ namespace PlatformFacade.Editor
         
         private EditorPlatform _platform;
 
+        public bool PlatformInitialized => _platform != null;
+
         private void Start()
         {
             InitializePlatform();
         }
 
-        private void InitializePlatform()
+        public void InitializePlatform()
         {
             // Create platform with settings (or use default if null)
             _platform = _settings != null 
