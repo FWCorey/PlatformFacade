@@ -18,7 +18,7 @@ namespace PlatformFacade
         /// Gets friends by their online status (based on authentication status)
         /// </summary>
         /// <param name="isOnline">True to get authenticated friends, false for unauthenticated friends</param>
-        /// <returns>Collection of friends matching the online status</returns>
-        IEnumerable<IUser> GetFriendsByStatus(bool isOnline);
+        /// <param name="results">List to populate with matching friends (cleared before use)</param>
+        void GetFriendsByStatus(bool isOnline, List<IUser> results);
     }
 }
