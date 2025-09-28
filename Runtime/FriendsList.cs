@@ -43,7 +43,17 @@ namespace PlatformFacade
         public IEnumerable<IUser> GetFriendsByStatus(bool isOnline)
         {
             var targetStatus = isOnline ? UserAuthenticationStatus.Authenticated : UserAuthenticationStatus.NotAuthenticated;
-            return _friends.Where(f => f.AuthenticationStatus == targetStatus);
+            var result = new List<IUser>();
+            
+            for (int i = 0; i < _friends.Count; i++)
+            {
+                if (_friends[i].AuthenticationStatus == targetStatus)
+                {
+                    result.Add(_friends[i]);
+                }
+            }
+            
+            return result;
         }
 
         /// <summary>
