@@ -18,7 +18,7 @@ namespace PlatformFacade
         ulong UserID { get; }
         
         /// <summary>
-        /// The authentication status of the user
+        /// The authentication status of the user. See <see cref="UserAuthenticationStatus"/> for possible values.
         /// </summary>
         UserAuthenticationStatus AuthenticationStatus { get; }
     }
