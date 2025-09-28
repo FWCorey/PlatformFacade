@@ -178,7 +178,7 @@ namespace PlatformFacade.Examples
             
             // Update UI with new friendlist
             var onlineFriends = friendsList.GetFriendsByStatus(true);
-            Debug.Log($"{onlineFriends.Count()} friends are online");
+            Debug.Log($"{onlineFriends.Count} friends are online");
         }
 
         /// <summary>
