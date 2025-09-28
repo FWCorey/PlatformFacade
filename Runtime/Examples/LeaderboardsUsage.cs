@@ -130,9 +130,9 @@ namespace PlatformFacade.Examples
         /// <summary>
         /// Event handler for score updates
         /// </summary>
-        private void OnScoreUpdated(ulong leaderboardID, long newScore)
+        private void OnScoreUpdated(ulong leaderboardID, ILeaderboardEntry entry)
         {
-            Debug.Log($"Your score on {leaderboardID} has been updated to {newScore}");
+            Debug.Log($"Your score on {leaderboardID} has been updated. Rank: {entry.Rank}, Score: {entry.Score}");
         }
     }
 }

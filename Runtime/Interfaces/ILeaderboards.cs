@@ -17,7 +17,7 @@ namespace PlatformFacade
         /// <summary>
         /// Event fired when the local user's score is updated on any leaderboard
         /// </summary>
-        event Action<ulong, long> ScoreUpdated;
+        event Action<ulong, ILeaderboardEntry> ScoreUpdated;
 
         /// <summary>
         /// Submits a score to the specified leaderboard
