@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace PlatformFacade.Editor
 {
@@ -70,20 +73,46 @@ namespace PlatformFacade.Editor
 
         private EditorPlatformSettings GetOrCreateDefaultSettings()
         {
-            // Try to find existing settings asset
-            var settingsAssets = Resources.LoadAll<EditorPlatformSettings>("");
-            if (settingsAssets.Length > 0)
+#if UNITY_EDITOR
+            // Try to find existing settings asset using AssetDatabase
+            var guids = AssetDatabase.FindAssets("t:EditorPlatformSettings", new[] { "Assets/Editor/Config" });
+            if (guids.Length > 0)
             {
-                return settingsAssets[0];
+                var path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                var settings = AssetDatabase.LoadAssetAtPath<EditorPlatformSettings>(path);
+                if (settings != null)
+                {
+                    return settings;
+                }
             }
 
-            // Create default settings in memory
+            // Create and save default settings to Assets/Editor/Config
             var defaultSettings = ScriptableObject.CreateInstance<EditorPlatformSettings>();
             
-            // Note: In a real Unity environment, you might want to save this to the project
-            // For now, we'll just use the in-memory instance with default values
+            // Ensure directory exists
+            var configPath = "Assets/Editor/Config";
+            if (!AssetDatabase.IsValidFolder(configPath))
+            {
+                // Create Editor folder if it doesn't exist
+                if (!AssetDatabase.IsValidFolder("Assets/Editor"))
+                {
+                    AssetDatabase.CreateFolder("Assets", "Editor");
+                }
+                // Create Config folder
+                AssetDatabase.CreateFolder("Assets/Editor", "Config");
+            }
+            
+            // Save the asset
+            var assetPath = $"{configPath}/DefaultEditorPlatformSettings.asset";
+            AssetDatabase.CreateAsset(defaultSettings, assetPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
             
             return defaultSettings;
+#else
+            // Create default settings in memory for non-editor builds
+            return ScriptableObject.CreateInstance<EditorPlatformSettings>();
+#endif
         }
 
         /// <summary>
