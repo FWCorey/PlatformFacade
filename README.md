@@ -35,6 +35,42 @@ PlatformFacade implements the Facade design pattern to create a unified interfac
 
 ## Quick Start
 
+### Runtime Initialization (Automatic)
+
+The easiest way to use PlatformFacade is through the automatic runtime initialization:
+
+```csharp
+using PlatformFacade;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    async void Start()
+    {
+        // PlatformManager automatically discovers and initializes the platform
+        var platform = PlatformManager.Current;
+        
+        if (platform != null)
+        {
+            // Authenticate user
+            var result = await platform.UserService.AuthenticateLocalUserAsync();
+            
+            if (result.IsSuccess)
+            {
+                Debug.Log($"Authenticated as: {result.Value.Name}");
+            }
+        }
+    }
+}
+```
+
+You can also use the `RuntimePlatformInitializer` component:
+1. Add the `RuntimePlatformInitializer` component to a GameObject in your scene
+2. It will automatically initialize the platform on Awake
+3. Access the platform via `PlatformManager.Current` from anywhere in your code
+
+The `PlatformManager` uses reflection to automatically find and instantiate the appropriate `IPlatform` implementation for your build target. It will log an error if multiple implementations are found.
+
 ### Using EditorPlatform for Development
 
 ```csharp
