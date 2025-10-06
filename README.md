@@ -71,6 +71,8 @@ You can also use the `RuntimePlatformInitializer` component:
 
 The `PlatformManager` uses reflection to automatically find and instantiate the appropriate `IPlatform` implementation for your build target. It will log an error if multiple implementations are found.
 
+For more details on runtime initialization, see the [Runtime Initialization Documentation](Documentation/Documentation.md).
+
 ### Using EditorPlatform for Development
 
 ```csharp
