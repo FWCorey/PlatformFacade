@@ -220,17 +220,22 @@ namespace PlatformFacade.Examples
         /// </summary>
         private IPlatform CreateMockPlatform()
         {
-            // Try to create EditorPlatform if available
-            var editorPlatformType = System.Type.GetType("PlatformFacade.Editor.EditorPlatform, PlatformFacade.Editor");
-            if (editorPlatformType != null)
+            // Try to create EditorPlatform via its initializer if available
+            var editorInitializerType = System.Type.GetType("PlatformFacade.Editor.EditorPlatformInitializer, PlatformFacade.Editor");
+            if (editorInitializerType != null)
             {
                 try
                 {
-                    return (IPlatform)System.Activator.CreateInstance(editorPlatformType);
+                    var initializer = (IPlatformInitializer)System.Activator.CreateInstance(editorInitializerType);
+                    initializer.InitializePlatform();
+                    if (initializer is IPlatformProvider provider)
+                    {
+                        return provider.Platform;
+                    }
                 }
                 catch
                 {
-                    // If EditorPlatform creation fails, return null
+                    // If EditorPlatformInitializer creation fails, return null
                 }
             }
             

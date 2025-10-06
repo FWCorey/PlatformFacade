@@ -7,11 +7,12 @@ namespace PlatformFacade
 {
     /// <summary>
     /// Manages the runtime initialization and provides access to the platform facade.
-    /// Uses reflection to automatically discover and initialize IPlatform implementations.
+    /// Uses reflection to automatically discover and initialize IPlatformInitializer implementations.
     /// </summary>
     public static class PlatformManager
     {
         private static IPlatform _currentPlatform;
+        private static IPlatformInitializer _platformInitializer;
         private static bool _isInitialized = false;
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace PlatformFacade
         public static bool IsInitialized => _isInitialized;
 
         /// <summary>
-        /// Initializes the platform facade by using reflection to find an IPlatform implementation.
+        /// Initializes the platform facade by using reflection to find an IPlatformInitializer implementation.
         /// Logs an error if more than one implementation is found.
         /// </summary>
         public static void Initialize()
@@ -48,8 +49,8 @@ namespace PlatformFacade
 
             try
             {
-                // Find all types that implement IPlatform
-                var platformTypes = AppDomain.CurrentDomain.GetAssemblies()
+                // Find all types that implement IPlatformInitializer
+                var initializerTypes = AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(assembly => 
                     {
                         try
@@ -63,38 +64,56 @@ namespace PlatformFacade
                         }
                     })
                     .Where(type => 
-                        typeof(IPlatform).IsAssignableFrom(type) && 
+                        typeof(IPlatformInitializer).IsAssignableFrom(type) && 
                         !type.IsInterface && 
-                        !type.IsAbstract)
+                        !type.IsAbstract &&
+                        !typeof(MonoBehaviour).IsAssignableFrom(type)) // Exclude MonoBehaviour types
                     .ToList();
 
-                if (platformTypes.Count == 0)
+                if (initializerTypes.Count == 0)
                 {
-                    Debug.LogError("PlatformManager: No IPlatform implementation found. Please ensure a platform implementation is available.");
+                    Debug.LogError("PlatformManager: No IPlatformInitializer implementation found. Please ensure a platform initializer is available.");
                     _isInitialized = true;
                     return;
                 }
 
-                if (platformTypes.Count > 1)
+                if (initializerTypes.Count > 1)
                 {
-                    var typeNames = string.Join(", ", platformTypes.Select(t => t.FullName));
-                    Debug.LogError($"PlatformManager: Multiple IPlatform implementations found: {typeNames}. Only one implementation should be present.");
+                    var typeNames = string.Join(", ", initializerTypes.Select(t => t.FullName));
+                    Debug.LogError($"PlatformManager: Multiple IPlatformInitializer implementations found: {typeNames}. Only one implementation should be present.");
                     _isInitialized = true;
                     return;
                 }
 
-                // Create an instance of the found platform type
-                var platformType = platformTypes[0];
+                // Create an instance of the found initializer type
+                var initializerType = initializerTypes[0];
                 
                 // Try to create instance using parameterless constructor
                 try
                 {
-                    _currentPlatform = (IPlatform)Activator.CreateInstance(platformType);
-                    Debug.Log($"PlatformManager: Successfully initialized platform: {platformType.FullName}");
+                    _platformInitializer = (IPlatformInitializer)Activator.CreateInstance(initializerType);
+                    
+                    // Initialize the platform
+                    _platformInitializer.InitializePlatform();
+                    
+                    // Get the platform instance from the initializer
+                    if (_platformInitializer is IPlatformProvider provider)
+                    {
+                        _currentPlatform = provider.Platform;
+                    }
+                    else
+                    {
+                        Debug.LogError($"PlatformManager: Initializer {initializerType.FullName} does not implement IPlatformProvider. Cannot retrieve platform instance.");
+                    }
+                    
+                    if (_currentPlatform != null)
+                    {
+                        Debug.Log($"PlatformManager: Successfully initialized platform via {initializerType.FullName}");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"PlatformManager: Failed to create instance of {platformType.FullName}. Error: {ex.Message}");
+                    Debug.LogError($"PlatformManager: Failed to create or initialize {initializerType.FullName}. Error: {ex.Message}");
                 }
             }
             catch (Exception ex)
