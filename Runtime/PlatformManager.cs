@@ -1,0 +1,135 @@
+using System;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
+
+namespace PlatformFacade
+{
+    /// <summary>
+    /// Manages the runtime initialization and provides access to the platform facade.
+    /// Uses reflection to automatically discover and initialize IPlatform implementations.
+    /// </summary>
+    public static class PlatformManager
+    {
+        private static IPlatform _currentPlatform;
+        private static bool _isInitialized = false;
+
+        /// <summary>
+        /// Gets the current platform instance. Initializes automatically if not already initialized.
+        /// </summary>
+        public static IPlatform Current
+        {
+            get
+            {
+                if (!_isInitialized)
+                {
+                    Initialize();
+                }
+                return _currentPlatform;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the platform has been initialized.
+        /// </summary>
+        public static bool IsInitialized => _isInitialized;
+
+        /// <summary>
+        /// Initializes the platform facade by using reflection to find an IPlatform implementation.
+        /// Logs an error if more than one implementation is found.
+        /// </summary>
+        public static void Initialize()
+        {
+            if (_isInitialized)
+            {
+                Debug.LogWarning("PlatformManager: Platform already initialized.");
+                return;
+            }
+
+            try
+            {
+                // Find all types that implement IPlatform
+                var platformTypes = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(assembly => 
+                    {
+                        try
+                        {
+                            return assembly.GetTypes();
+                        }
+                        catch (ReflectionTypeLoadException)
+                        {
+                            // Some assemblies may fail to load all types, skip them
+                            return Array.Empty<Type>();
+                        }
+                    })
+                    .Where(type => 
+                        typeof(IPlatform).IsAssignableFrom(type) && 
+                        !type.IsInterface && 
+                        !type.IsAbstract)
+                    .ToList();
+
+                if (platformTypes.Count == 0)
+                {
+                    Debug.LogError("PlatformManager: No IPlatform implementation found. Please ensure a platform implementation is available.");
+                    _isInitialized = true;
+                    return;
+                }
+
+                if (platformTypes.Count > 1)
+                {
+                    var typeNames = string.Join(", ", platformTypes.Select(t => t.FullName));
+                    Debug.LogError($"PlatformManager: Multiple IPlatform implementations found: {typeNames}. Only one implementation should be present.");
+                    _isInitialized = true;
+                    return;
+                }
+
+                // Create an instance of the found platform type
+                var platformType = platformTypes[0];
+                
+                // Try to create instance using parameterless constructor
+                try
+                {
+                    _currentPlatform = (IPlatform)Activator.CreateInstance(platformType);
+                    Debug.Log($"PlatformManager: Successfully initialized platform: {platformType.FullName}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"PlatformManager: Failed to create instance of {platformType.FullName}. Error: {ex.Message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"PlatformManager: Initialization failed with exception: {ex.Message}");
+            }
+            finally
+            {
+                _isInitialized = true;
+            }
+        }
+
+        /// <summary>
+        /// Manually sets the platform instance. Useful for testing or custom initialization scenarios.
+        /// </summary>
+        /// <param name="platform">The platform instance to use</param>
+        public static void SetPlatform(IPlatform platform)
+        {
+            _currentPlatform = platform;
+            _isInitialized = true;
+            
+            if (platform != null)
+            {
+                Debug.Log($"PlatformManager: Platform manually set to {platform.GetType().FullName}");
+            }
+        }
+
+        /// <summary>
+        /// Resets the platform manager, allowing reinitialization. Primarily for testing purposes.
+        /// </summary>
+        public static void Reset()
+        {
+            _currentPlatform = null;
+            _isInitialized = false;
+            Debug.Log("PlatformManager: Reset completed");
+        }
+    }
+}
