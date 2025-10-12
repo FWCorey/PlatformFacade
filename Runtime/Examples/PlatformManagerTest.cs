@@ -227,11 +227,7 @@ namespace PlatformFacade.Examples
                 try
                 {
                     var initializer = (IPlatformInitializer)System.Activator.CreateInstance(editorInitializerType);
-                    initializer.InitializePlatform();
-                    if (initializer is IPlatformProvider provider)
-                    {
-                        return provider.Platform;
-                    }
+                    return initializer.InitializePlatform();
                 }
                 catch
                 {

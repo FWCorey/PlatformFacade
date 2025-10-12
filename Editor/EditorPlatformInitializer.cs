@@ -1,33 +1,20 @@
 namespace PlatformFacade.Editor
 {
     /// <summary>
-    /// Runtime initializer for EditorPlatform that can be discovered via reflection.
+    /// Factory for creating and initializing EditorPlatform instances.
     /// This class follows the Single Responsibility Principle by separating initialization logic
-    /// from the platform implementation.
+    /// from the platform implementation. It has no platform-specific fields and only constructs
+    /// the platform.
     /// </summary>
-    public class EditorPlatformInitializer : IPlatformInitializer, IPlatformProvider
+    public class EditorPlatformInitializer : IPlatformInitializer
     {
-        private EditorPlatform _platform;
-
         /// <summary>
-        /// Gets whether the platform has been initialized
+        /// Creates and initializes the EditorPlatform with default settings
         /// </summary>
-        public bool PlatformInitialized => _platform != null;
-
-        /// <summary>
-        /// Gets the initialized platform instance
-        /// </summary>
-        public IPlatform Platform => _platform;
-
-        /// <summary>
-        /// Initializes the EditorPlatform with default settings
-        /// </summary>
-        public void InitializePlatform()
+        /// <returns>The initialized EditorPlatform instance</returns>
+        public IPlatform InitializePlatform()
         {
-            if (_platform == null)
-            {
-                _platform = EditorPlatform.CreateDefault();
-            }
+            return EditorPlatform.CreateDefault();
         }
     }
 }

@@ -103,20 +103,22 @@ When `Initialize()` is called, the PlatformManager:
 1. Scans all loaded assemblies for types implementing `IPlatformInitializer`
 2. Filters out interfaces, abstract classes, and MonoBehaviour types
 3. Checks the count of implementations:
-   - **0 implementations**: Logs an error (no platform initializer available)
-   - **1 implementation**: Creates an instance and calls `InitializePlatform()`
-   - **2+ implementations**: Logs an error (ambiguous initializer)
-4. Retrieves the `IPlatform` instance from the initializer via `IPlatformProvider`
+   - **0 implementations**: Logs an error and does not set initialized flag
+   - **1 implementation**: Creates an instance and calls `InitializePlatform()` which returns the platform
+   - **2+ implementations**: Logs an error and does not set initialized flag
+4. Sets the initialized flag only on successful platform creation
+
+Note: The PlatformManager always uses reflection for discovery, even if a DLL is loaded later. This ensures newly loaded assemblies are discovered on the next initialization attempt.
 
 ### Error Handling
 
 The PlatformManager handles several error scenarios:
 
-- **No Implementation Found**: Logs an error if no IPlatformInitializer implementation exists
-- **Multiple Implementations**: Logs an error listing all found implementations
-- **Constructor Failure**: Logs an error if the initializer constructor throws an exception
-- **Initialization Failure**: Logs an error if `InitializePlatform()` throws an exception
-- **Missing Provider Interface**: Logs an error if initializer doesn't implement IPlatformProvider
+- **No Implementation Found**: Logs an error if no IPlatformInitializer implementation exists, keeps initialized flag false
+- **Multiple Implementations**: Logs an error listing all found implementations, keeps initialized flag false
+- **Constructor Failure**: Logs an error if the initializer constructor throws an exception, keeps initialized flag false
+- **Initialization Failure**: Logs an error if `InitializePlatform()` throws an exception, keeps initialized flag false
+- **Null Platform**: Logs an error if `InitializePlatform()` returns null, keeps initialized flag false
 - **Assembly Load Errors**: Gracefully handles assemblies that fail to load types
 
 ## Best Practices
@@ -132,9 +134,10 @@ The PlatformManager handles several error scenarios:
 When creating a new platform implementation:
 
 1. Create an `IPlatform` implementation with all required services
-2. Create an `IPlatformInitializer` and `IPlatformProvider` implementation
-3. The initializer should have a parameterless constructor for reflection
-4. Use appropriate assembly definitions to control availability
+2. Create an `IPlatformInitializer` factory implementation
+3. The initializer should be a pure factory with no platform-specific fields
+4. The initializer should have a parameterless constructor for reflection
+5. Use appropriate assembly definitions to control availability
 
 Example:
 
@@ -160,17 +163,13 @@ namespace MyGame.Platform
         // ... other service properties
     }
 
-    // Platform initializer (discovered by reflection)
-    public class MyPlatformInitializer : IPlatformInitializer, IPlatformProvider
+    // Platform initializer factory (discovered by reflection)
+    // Should be a pure factory with no platform-specific fields
+    public class MyPlatformInitializer : IPlatformInitializer
     {
-        private MyPlatform _platform;
-
-        public bool PlatformInitialized => _platform != null;
-        public IPlatform Platform => _platform;
-
-        public void InitializePlatform()
+        public IPlatform InitializePlatform()
         {
-            _platform = new MyPlatform();
+            return new MyPlatform();
         }
     }
 }
@@ -184,7 +183,7 @@ This error occurs when no class implementing IPlatformInitializer is found. Solu
 - Ensure you have a platform initializer in your project
 - Check that the initializer is in a loaded assembly
 - Verify the class is not abstract, not a MonoBehaviour, and has a parameterless constructor
-- Ensure the initializer implements both `IPlatformInitializer` and `IPlatformProvider`
+- Ensure the initializer implements `IPlatformInitializer`
 
 ### "Multiple IPlatformInitializer implementations found"
 
@@ -193,16 +192,16 @@ This error occurs when more than one IPlatformInitializer implementation is disc
 - Use assembly definitions to separate platforms by build target
 - Use preprocessor directives to conditionally compile platforms
 
-### "Initializer does not implement IPlatformProvider"
+### "Initializer returned null platform instance"
 
-This error occurs when an initializer doesn't implement IPlatformProvider. Solutions:
-- Ensure your initializer class implements both `IPlatformInitializer` and `IPlatformProvider`
-- Implement the `Platform` property to return your initialized platform instance
+This error occurs when `InitializePlatform()` returns null. Solutions:
+- Ensure your initializer's `InitializePlatform()` method creates and returns a valid platform instance
+- Check that platform construction doesn't fail silently
 
 ### Platform services are null
 
 If `PlatformManager.Current` is null:
 - Check the Unity console for initialization errors
 - Verify a valid platform initializer exists
-- Ensure the initializer's `InitializePlatform()` method properly creates the platform
-- Ensure the `Platform` property returns a valid instance after initialization
+- Ensure the initializer's `InitializePlatform()` method properly creates and returns the platform
+- Try calling `PlatformManager.Reset()` and then `PlatformManager.Initialize()` to retry initialization

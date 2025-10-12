@@ -4,9 +4,11 @@ using UnityEngine;
 namespace PlatformFacade.Editor
 {
     /// <summary>
-    /// Example usage of EditorPlatform for testing and development in Unity Editor
+    /// Example usage of EditorPlatform for testing and development in Unity Editor.
+    /// Note: This is a MonoBehaviour example and will not be discovered by PlatformManager's reflection.
+    /// For automatic discovery, use EditorPlatformInitializer instead.
     /// </summary>
-    public class EditorPlatformExample : MonoBehaviour, IPlatformInitializer
+    public class EditorPlatformExample : MonoBehaviour
     {
         [SerializeField] private EditorPlatformSettings _settings;
         
@@ -16,10 +18,10 @@ namespace PlatformFacade.Editor
 
         private void Start()
         {
-            InitializePlatform();
+            InitializePlatformInternal();
         }
 
-        public void InitializePlatform()
+        private void InitializePlatformInternal()
         {
             // Create platform with settings (or use default if null)
             _platform = _settings != null 
