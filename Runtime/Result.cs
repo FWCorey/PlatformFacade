@@ -38,27 +38,28 @@ namespace PlatformFacade
         public TError Error => !IsSuccess
             ? _error
             : throw new InvalidOperationException("Result was a success.");
+    }
 
+    /// <summary>
+    /// Extension methods for Result&lt;TSuccess, TError&gt;.
+    /// </summary>
+    public static class ResultExtensions {
         /// <summary>
         /// Chains an operation that returns a Task&lt;Result&gt; if the previous task was a success.
         /// </summary>
         /// <param name="task">The previous async operation in the chain.</param>
         /// <param name="func">The function to execute if the previous operation was a success.</param>
         /// <returns>The Result of the new operation, or the Failure from the previous one.</returns>
-        public static async Task<Result<TNewSuccess, TError>> Then<TNewSuccess>(
+        public static async Task<Result<TNewSuccess, TError>> Then<TSuccess, TNewSuccess, TError>(
             this Task<Result<TSuccess, TError>> task,
-            Func<TSuccess, Task<Result<TNewSuccess, TError>>> func)
-        {
+            Func<TSuccess, Task<Result<TNewSuccess, TError>>> func) {
             // Await the result of the previous operation
             var initialResult = await task;
 
-            if (initialResult.IsSuccess)
-            {
+            if (initialResult.IsSuccess) {
                 // If it succeeded, execute the next function in the chain
                 return await func(initialResult.Value);
-            }
-            else
-            {
+            } else {
                 // If it failed, short-circuit and propagate the error
                 return new Result<TNewSuccess, TError>(initialResult.Error);
             }
