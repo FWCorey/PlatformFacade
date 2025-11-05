@@ -74,4 +74,4 @@ namespace PlatformFacade
         /// <param name="endRank">The ending rank (1-based, inclusive)</param>
         /// <returns>A task containing the leaderboard entries if available, error message otherwise</returns>
         Task<Result<ILeaderboard, string>> GetLeaderboardByRangeAsync(ulong leaderboardID, int startRank, int endRank);
-    }
+    }}
