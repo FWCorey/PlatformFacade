@@ -3,7 +3,7 @@ A generic Platform facade to abstract platform SDKs from your Unity projects
 
 ## Overview
 
-PlatformFacade implements the Facade design pattern to create a unified interface for various gaming platform services like user authentication, leaderboards, multiplayer, storage, and overlays. The package uses Railway Oriented Design for async operations, creating robust and composable async workflows.
+PlatformFacade implements the Facade design pattern to create a unified interface for various gaming platform services like user authentication, leaderboards, achievements, multiplayer, storage, and overlays. The package uses Railway Oriented Design for async operations, creating robust and composable async workflows.
 
 ## Features
 
@@ -142,6 +142,13 @@ Main entry point providing access to all platform services.
 - Leaderboard retrieval (global, friends, around user)
 - Rank queries
 
+### IAchievements
+- Achievement unlocking
+- Progress tracking for incremental achievements
+- Query all, unlocked, or locked achievements
+- Event notifications for unlocks and progress updates
+- Optional service (returns null on platforms without achievement support)
+
 ### IStorage
 Platform-specific data persistence (interface ready for implementation).
 
@@ -179,6 +186,7 @@ The `EditorPlatform` provides a complete mock implementation perfect for:
 - Configurable mock user data
 - Simulated network delays
 - Sample leaderboard data
+- Sample achievement data
 - Mock friends list
 - Portrait configuration via ScriptableObject
 

@@ -15,6 +15,7 @@ namespace PlatformFacade.Editor
         private readonly EditorMultiplayerService _multiplayerService;
         private readonly EditorStorage _storage;
         private readonly EditorLeaderboards _leaderboards;
+        private readonly EditorAchievements _achievements;
 
         /// <summary>
         /// Gets the user service for managing authentication, friend lists, and user portraits
@@ -37,6 +38,12 @@ namespace PlatformFacade.Editor
         public ILeaderboards Leaderboards => _leaderboards;
 
         /// <summary>
+        /// Gets the achievements service for managing achievement functionality.
+        /// Returns null if the platform does not support achievements.
+        /// </summary>
+        public IAchievements Achievements => _achievements;
+
+        /// <summary>
         /// Initializes a new instance of the EditorPlatform class
         /// </summary>
         /// <param name="settings">The editor platform settings to use for configuration</param>
@@ -50,6 +57,7 @@ namespace PlatformFacade.Editor
             _multiplayerService = new EditorMultiplayerService(_settings);
             _storage = new EditorStorage(_settings);
             _leaderboards = new EditorLeaderboards(_settings);
+            _achievements = new EditorAchievements(_settings);
         }
 
         /// <summary>

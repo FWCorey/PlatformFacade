@@ -94,11 +94,13 @@ namespace PlatformFacade.Examples
                 var leaderboards = platform.Leaderboards;
                 var storage = platform.Storage;
                 var multiplayer = platform.MultiplayerService;
+                var achievements = platform.Achievements;
 
                 Debug.Log($"✓ UserService: {userService != null}");
                 Debug.Log($"✓ Leaderboards: {leaderboards != null}");
                 Debug.Log($"✓ Storage: {storage != null}");
                 Debug.Log($"✓ MultiplayerService: {multiplayer != null}");
+                Debug.Log($"✓ Achievements: {achievements != null}");
                 
                 _testStatus = "All services accessible";
             }

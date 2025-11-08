@@ -26,5 +26,11 @@ namespace PlatformFacade
         /// Gets the leaderboards service for managing leaderboard functionality
         /// </summary>
         ILeaderboards Leaderboards { get; }
+        
+        /// <summary>
+        /// Gets the achievements service for managing achievement functionality.
+        /// Returns null if the platform does not support achievements.
+        /// </summary>
+        IAchievements Achievements { get; }
     }
 }
