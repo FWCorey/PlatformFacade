@@ -194,7 +194,7 @@ namespace PlatformFacade.Editor
         private void InitializeFriendsList()
         {
             // Create some mock friends for editor testing
-            var mockFriends = new[]
+            IUser[] mockFriends = new IUser[]
             {
                 new LocalUser("Friend One", "Friend1", 11111, UserAuthenticationStatus.Authenticated),
                 new LocalUser("Friend Two", "Friend2", 22222, UserAuthenticationStatus.NotAuthenticated),

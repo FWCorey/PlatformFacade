@@ -128,7 +128,7 @@ namespace PlatformFacade.Examples
             }
             
             PlatformManager.Initialize();
-            
+            _initializationSuccessful = PlatformManager.IsInitialized;
             if (PlatformManager.IsInitialized)
             {
                 Debug.Log("✓ Manual initialization successful");

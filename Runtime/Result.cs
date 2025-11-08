@@ -1,30 +1,26 @@
 using System;
 using System.Threading.Tasks;
 
-namespace PlatformFacade
-{
+namespace PlatformFacade {
     /// <summary>
     /// Represents the result of an operation that can either succeed or fail.
     /// Implements Railway Oriented Programming pattern.
     /// </summary>
     /// <typeparam name="TSuccess">The type of the success value</typeparam>
     /// <typeparam name="TError">The type of the error value</typeparam>
-    public readonly struct Result<TSuccess, TError>
-    {
+    public struct Result<TSuccess, TError> {
         public readonly bool IsSuccess;
         private readonly TSuccess _value;
         private readonly TError _error;
 
         // --- Constructors ---
-        public Result(TSuccess value)
-        {
+        public Result(TSuccess value) {
             IsSuccess = true;
             _value = value;
             _error = default;
         }
 
-        public Result(TError error)
-        {
+        public Result(TError error) {
             IsSuccess = false;
             _value = default;
             _error = error;

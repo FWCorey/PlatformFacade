@@ -192,7 +192,7 @@ namespace PlatformFacade.Editor
 
         private void InitializeMockLeaderboards()
         {
-            _leaderboards = new ConcurrentDictionary<ulong, EditorLeaderboard>();
+            _leaderboards.Clear();
 
             // Create a sample leaderboard
             var sampleLeaderboard = new EditorLeaderboard(1001, "High Scores");

@@ -94,9 +94,10 @@ namespace PlatformFacade.Editor
         /// </summary>
         private async Task ApplySimulatedDelayAsync()
         {
-            var delayMs = _settings?.SimulatedNetworkDelayMs ?? 100;
-            if (delayMs > 0)
+            
+            if (_settings?.SimulateNetworkDelay ?? false)
             {
+                int delayMs = (int)(_settings.GetRandomNetworkDelay() * 1000);
                 await Task.Delay(delayMs);
             }
         }
