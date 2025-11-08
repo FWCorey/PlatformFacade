@@ -11,6 +11,11 @@ namespace PlatformFacade
     public interface IAchievements
     {
         /// <summary>
+        /// Gets whether achievements are supported on the current platform
+        /// </summary>
+        bool IsSupported { get; }
+        
+        /// <summary>
         /// Event fired when an achievement is unlocked
         /// </summary>
         event Action<IAchievement> AchievementUnlocked;
@@ -19,6 +24,11 @@ namespace PlatformFacade
         /// Event fired when achievement progress is updated
         /// </summary>
         event Action<IAchievement> AchievementProgressUpdated;
+        
+        /// <summary>
+        /// Event fired when achievements are synced and available locally for display
+        /// </summary>
+        event Action AchievementsSynced;
 
         /// <summary>
         /// Unlocks the specified achievement for the current user

@@ -26,7 +26,7 @@ namespace PlatformFacade.Examples
             // Get achievements service (may be null on platforms without achievement support)
             _achievements = _platform.Achievements;
 
-            if (_achievements == null)
+            if (_achievements == null || !_achievements.IsSupported)
             {
                 Debug.LogWarning("Achievements not supported on this platform.");
                 return;
@@ -35,6 +35,7 @@ namespace PlatformFacade.Examples
             // Subscribe to achievement events
             _achievements.AchievementUnlocked += OnAchievementUnlocked;
             _achievements.AchievementProgressUpdated += OnAchievementProgressUpdated;
+            _achievements.AchievementsSynced += OnAchievementsSynced;
 
             // Demo: Load and display all achievements
             await DemoLoadAllAchievements();
@@ -108,6 +109,11 @@ namespace PlatformFacade.Examples
             Debug.Log($"📊 Achievement Progress: {achievement.DisplayName} - {achievement.Progress * 100:F0}%");
         }
 
+        private void OnAchievementsSynced()
+        {
+            Debug.Log("✅ Achievements synced and ready for display");
+        }
+
         private void OnDestroy()
         {
             // Unsubscribe from events
@@ -115,6 +121,7 @@ namespace PlatformFacade.Examples
             {
                 _achievements.AchievementUnlocked -= OnAchievementUnlocked;
                 _achievements.AchievementProgressUpdated -= OnAchievementProgressUpdated;
+                _achievements.AchievementsSynced -= OnAchievementsSynced;
             }
         }
     }

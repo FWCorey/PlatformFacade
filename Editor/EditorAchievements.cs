@@ -15,6 +15,11 @@ namespace PlatformFacade.Editor
         private readonly Dictionary<string, EditorAchievement> _achievements;
 
         /// <summary>
+        /// Gets whether achievements are supported on the current platform
+        /// </summary>
+        public bool IsSupported => true;
+
+        /// <summary>
         /// Event fired when an achievement is unlocked
         /// </summary>
         public event Action<IAchievement> AchievementUnlocked;
@@ -23,6 +28,11 @@ namespace PlatformFacade.Editor
         /// Event fired when achievement progress is updated
         /// </summary>
         public event Action<IAchievement> AchievementProgressUpdated;
+        
+        /// <summary>
+        /// Event fired when achievements are synced and available locally for display
+        /// </summary>
+        public event Action AchievementsSynced;
 
         /// <summary>
         /// Initializes a new instance of the EditorAchievements class
@@ -33,6 +43,9 @@ namespace PlatformFacade.Editor
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _achievements = new Dictionary<string, EditorAchievement>();
             InitializeDefaultAchievements();
+            
+            // Fire synced event as achievements are immediately available in editor
+            AchievementsSynced?.Invoke();
         }
 
         /// <summary>
@@ -77,13 +90,25 @@ namespace PlatformFacade.Editor
         }
 
         /// <summary>
+        /// Helper method to apply simulated network delay if configured
+        /// </summary>
+        private async Task ApplySimulatedDelayAsync()
+        {
+            var delayMs = _settings?.SimulatedNetworkDelayMs ?? 100;
+            if (delayMs > 0)
+            {
+                await Task.Delay(delayMs);
+            }
+        }
+
+        /// <summary>
         /// Unlocks the specified achievement for the current user
         /// </summary>
         /// <param name="achievementID">The unique identifier of the achievement</param>
         /// <returns>A task containing the result of the unlock operation</returns>
         public async Task<Result<bool, string>> UnlockAchievementAsync(string achievementID)
         {
-            await Task.Delay(_settings?.SimulatedNetworkDelayMs ?? 100);
+            await ApplySimulatedDelayAsync();
 
             if (string.IsNullOrEmpty(achievementID))
             {
@@ -119,7 +144,7 @@ namespace PlatformFacade.Editor
         /// <returns>A task containing the result of the progress update</returns>
         public async Task<Result<bool, string>> SetAchievementProgressAsync(string achievementID, float progress)
         {
-            await Task.Delay(_settings?.SimulatedNetworkDelayMs ?? 100);
+            await ApplySimulatedDelayAsync();
 
             if (string.IsNullOrEmpty(achievementID))
             {
@@ -166,7 +191,7 @@ namespace PlatformFacade.Editor
         /// <returns>A task containing the result of the increment operation</returns>
         public async Task<Result<bool, string>> IncrementAchievementProgressAsync(string achievementID, float increment)
         {
-            await Task.Delay(_settings?.SimulatedNetworkDelayMs ?? 100);
+            await ApplySimulatedDelayAsync();
 
             if (string.IsNullOrEmpty(achievementID))
             {
@@ -195,7 +220,7 @@ namespace PlatformFacade.Editor
         /// <returns>A task containing the achievement if available, error message otherwise</returns>
         public async Task<Result<IAchievement, string>> GetAchievementAsync(string achievementID)
         {
-            await Task.Delay(_settings?.SimulatedNetworkDelayMs ?? 100);
+            await ApplySimulatedDelayAsync();
 
             if (string.IsNullOrEmpty(achievementID))
             {
@@ -216,7 +241,7 @@ namespace PlatformFacade.Editor
         /// <returns>A task containing the list of all achievements if available, error message otherwise</returns>
         public async Task<Result<IReadOnlyList<IAchievement>, string>> GetAllAchievementsAsync()
         {
-            await Task.Delay(_settings?.SimulatedNetworkDelayMs ?? 100);
+            await ApplySimulatedDelayAsync();
 
             var allAchievements = _achievements.Values.Cast<IAchievement>().ToList().AsReadOnly();
             return new Result<IReadOnlyList<IAchievement>, string>(allAchievements);
@@ -228,7 +253,7 @@ namespace PlatformFacade.Editor
         /// <returns>A task containing the list of unlocked achievements if available, error message otherwise</returns>
         public async Task<Result<IReadOnlyList<IAchievement>, string>> GetUnlockedAchievementsAsync()
         {
-            await Task.Delay(_settings?.SimulatedNetworkDelayMs ?? 100);
+            await ApplySimulatedDelayAsync();
 
             var unlockedAchievements = _achievements.Values
                 .Where(a => a.IsUnlocked)
@@ -245,7 +270,7 @@ namespace PlatformFacade.Editor
         /// <returns>A task containing the list of locked achievements if available, error message otherwise</returns>
         public async Task<Result<IReadOnlyList<IAchievement>, string>> GetLockedAchievementsAsync()
         {
-            await Task.Delay(_settings?.SimulatedNetworkDelayMs ?? 100);
+            await ApplySimulatedDelayAsync();
 
             var lockedAchievements = _achievements.Values
                 .Where(a => !a.IsUnlocked)
@@ -262,7 +287,7 @@ namespace PlatformFacade.Editor
         /// <returns>A task containing the result of the reset operation</returns>
         public async Task<Result<bool, string>> ResetAchievementsAsync()
         {
-            await Task.Delay(_settings?.SimulatedNetworkDelayMs ?? 100);
+            await ApplySimulatedDelayAsync();
 
             foreach (var achievement in _achievements.Values)
             {

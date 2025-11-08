@@ -20,6 +20,7 @@ namespace PlatformFacade.Examples
             // Subscribe to achievement events
             _achievements.AchievementUnlocked += OnAchievementUnlocked;
             _achievements.AchievementProgressUpdated += OnAchievementProgressUpdated;
+            _achievements.AchievementsSynced += OnAchievementsSynced;
         }
 
         /// <summary>
@@ -217,6 +218,14 @@ namespace PlatformFacade.Examples
         private void OnAchievementProgressUpdated(IAchievement achievement)
         {
             Debug.Log($"Achievement progress: {achievement.DisplayName} - {achievement.Progress * 100:F1}%");
+        }
+
+        /// <summary>
+        /// Event handler for achievements synced
+        /// </summary>
+        private void OnAchievementsSynced()
+        {
+            Debug.Log("Achievements synced and available for display");
         }
     }
 }

@@ -40,5 +40,12 @@ namespace PlatformFacade
         /// Gets the timestamp when this achievement was unlocked, or null if not yet unlocked
         /// </summary>
         System.DateTime? UnlockedTime { get; }
+        
+        /// <summary>
+        /// Attempts to get the icon for this achievement and write it to the provided texture
+        /// </summary>
+        /// <param name="writeableTexture">The texture to write the icon data to</param>
+        /// <returns>True if the icon was successfully retrieved and written, false otherwise</returns>
+        bool TryGetIcon(UnityEngine.Texture2D writeableTexture);
     }
 }

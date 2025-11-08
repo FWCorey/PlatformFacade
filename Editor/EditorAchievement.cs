@@ -44,6 +44,17 @@ namespace PlatformFacade.Editor
         public DateTime? UnlockedTime { get; internal set; }
 
         /// <summary>
+        /// Attempts to get the icon for this achievement and write it to the provided texture
+        /// </summary>
+        /// <param name="writeableTexture">The texture to write the icon data to</param>
+        /// <returns>True if the icon was successfully retrieved and written, false otherwise</returns>
+        public bool TryGetIcon(UnityEngine.Texture2D writeableTexture)
+        {
+            // Editor implementation returns false as we don't have actual achievement icons
+            return false;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the EditorAchievement class
         /// </summary>
         /// <param name="achievementID">The unique identifier for this achievement</param>
