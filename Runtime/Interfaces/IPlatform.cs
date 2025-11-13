@@ -1,3 +1,5 @@
+using System;
+
 namespace PlatformFacade
 {
     /// <summary>
@@ -31,5 +33,7 @@ namespace PlatformFacade
         /// Gets the achievements service for managing achievement functionality.
         /// </summary>
         IAchievements Achievements { get; }
+
+        public event Action<bool> OverlayActivated;
     }
 }

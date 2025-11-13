@@ -73,40 +73,41 @@ namespace PlatformFacade
                 {
                     Debug.LogError("PlatformManager: No IPlatformInitializer implementation found. Please ensure a platform initializer is available.");
                     return;
+                } else {
+                    foreach (var type in initializerTypes) {
+                        Debug.Log($"PlatformManager: Found IPlatformInitializer implementation: {type.FullName}");
+                    }
                 }
 
-                if (initializerTypes.Count > 1)
-                {
+                // Log a warning if multiple initializers are found, try all until we get a platform
+                // User may want to handle optional platform initializers in their own way
+                if (initializerTypes.Count > 1) {
                     var typeNames = string.Join(", ", initializerTypes.Select(t => t.FullName));
-                    Debug.LogError($"PlatformManager: Multiple IPlatformInitializer implementations found: {typeNames}. Only one implementation should be present.");
-                    return;
+                    Debug.LogWarning($"PlatformManager: Multiple IPlatformInitializer implementations found: {typeNames}. Getting first successful initialization.");
                 }
+                for (int i = 0; i < initializerTypes.Count; i++) {
+                    // Create an instance of the found initializer type
+                    var initializerType = initializerTypes[i];
 
-                // Create an instance of the found initializer type
-                var initializerType = initializerTypes[0];
-                
-                // Try to create instance using parameterless constructor and initialize platform
-                try
-                {
-                    var platformInitializer = (IPlatformInitializer)Activator.CreateInstance(initializerType);
-                    
-                    // Initialize the platform and get the instance
-                    _currentPlatform = platformInitializer.InitializePlatform();
-                    
-                    if (_currentPlatform != null)
-                    {
-                        Debug.Log($"PlatformManager: Successfully initialized platform via {initializerType.FullName}");
-                        _isInitialized = true;
-                    }
-                    else
-                    {
-                        Debug.LogError($"PlatformManager: Initializer {initializerType.FullName} returned null platform instance.");
+                    // Try to create instance using parameterless constructor and initialize platform
+                    try {
+                        var platformInitializer = (IPlatformInitializer)Activator.CreateInstance(initializerType);
+
+                        // Initialize the platform and get the instance
+                        _currentPlatform = platformInitializer.InitializePlatform();
+
+                        if (_currentPlatform != null) {
+                            Debug.Log($"PlatformManager: Successfully initialized platform via {initializerType.FullName}");
+                            _isInitialized = true;
+                            return;
+                        } else {
+                            Debug.Log($"PlatformManager: Initializer {initializerType.FullName} returned null platform instance.");
+                        }
+                    } catch (Exception ex) {
+                        Debug.LogError($"PlatformManager: Failed to create or initialize {initializerType.FullName}. Error: {ex.Message}");
                     }
                 }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"PlatformManager: Failed to create or initialize {initializerType.FullName}. Error: {ex.Message}");
-                }
+                Debug.LogError("PlatformManager: All IPlatformInitializer implementations failed to initialize a platform instance.");
             }
             catch (Exception ex)
             {

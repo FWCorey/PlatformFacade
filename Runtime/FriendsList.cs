@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace PlatformFacade
 {
     /// <summary>
-    /// A concrete implementation of IFriendsList providing readonly access to friends
+    /// A concrete dummy implementation of IFriendsList providing readonly access to friends
     /// </summary>
     public class FriendsList : IFriendsList
     {
@@ -56,15 +56,7 @@ namespace PlatformFacade
         public void GetFriendsByStatus(bool isOnline, List<IUser> results)
         {
             results.Clear();
-            var targetStatus = isOnline ? UserAuthenticationStatus.Authenticated : UserAuthenticationStatus.NotAuthenticated;
             
-            for (int i = 0; i < _friends.Count; i++)
-            {
-                if (_friends[i].AuthenticationStatus == targetStatus)
-                {
-                    results.Add(_friends[i]);
-                }
-            }
         }
 
         /// <summary>

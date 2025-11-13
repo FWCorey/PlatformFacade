@@ -14,7 +14,12 @@ namespace PlatformFacade.Editor
         /// <returns>The initialized EditorPlatform instance</returns>
         public IPlatform InitializePlatform()
         {
-            return EditorPlatform.CreateDefault();
+            var settings = EditorPlatform.GetOrCreateDefaultSettings();
+            if(settings && settings.EditorPlatformEnabled)
+            {
+                return new EditorPlatform(settings);
+            }
+            return null;
         }
     }
 }

@@ -174,7 +174,7 @@ namespace PlatformFacade.Editor
                 
                 foreach (var friend in friends)
                 {
-                    Debug.Log($"  Friend: {friend.Name} ({friend.GamerTag}) - Status: {friend.AuthenticationStatus}");
+                    Debug.Log($"  Friend: {friend.Name} ({friend.GamerTag})");
                 }
             }
             else

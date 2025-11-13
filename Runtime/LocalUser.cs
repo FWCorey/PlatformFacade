@@ -3,8 +3,7 @@ namespace PlatformFacade
     /// <summary>
     /// A struct representing a local user implementation of IUser
     /// </summary>
-    public struct LocalUser : IUser
-    {
+    public struct LocalUser : IUser, IAuthenticatedUser {
         /// <summary>
         /// The display name of the user
         /// </summary>

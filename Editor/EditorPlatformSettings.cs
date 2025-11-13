@@ -8,6 +8,7 @@ namespace PlatformFacade.Editor
     [CreateAssetMenu(fileName = "EditorPlatformSettings", menuName = "Platform Facade/Editor Platform Settings")]
     public class EditorPlatformSettings : ScriptableObject
     {
+        [SerializeField] private bool _enableEditorPlatform = true;
         [Header("User Settings")]
         [SerializeField] private string _userName = "EditorUser";
         [SerializeField] private string _gamerTag = "DevUser";
@@ -65,6 +66,8 @@ namespace PlatformFacade.Editor
         /// Gets the maximum network delay for simulation
         /// </summary>
         public float NetworkDelayMax => _networkDelayMax;
+
+        public bool EditorPlatformEnabled => _enableEditorPlatform;
 
         /// <summary>
         /// Gets a random network delay value within the configured range

@@ -1,5 +1,6 @@
-using UnityEngine;
+using System;
 using UnityEditor;
+using UnityEngine;
 
 namespace PlatformFacade.Editor
 {
@@ -41,6 +42,8 @@ namespace PlatformFacade.Editor
         /// </summary>
         public IAchievements Achievements => _achievements;
 
+        public event Action<bool> OverlayActivated;
+
         /// <summary>
         /// Initializes a new instance of the EditorPlatform class
         /// </summary>
@@ -77,7 +80,7 @@ namespace PlatformFacade.Editor
             return new EditorPlatform(settings);
         }
 
-        private EditorPlatformSettings GetOrCreateDefaultSettings()
+        public static EditorPlatformSettings GetOrCreateDefaultSettings()
         {
 
             // Try to find existing settings asset using AssetDatabase

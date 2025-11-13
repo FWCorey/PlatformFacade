@@ -39,7 +39,7 @@ namespace PlatformFacade.Editor
         /// Gets the current local user
         /// </summary>
         /// <returns>The local user if available, null otherwise</returns>
-        public IUser GetLocalUser()
+        public IAuthenticatedUser GetLocalUser()
         {
             return _localUser;
         }
@@ -48,14 +48,14 @@ namespace PlatformFacade.Editor
         /// Authenticates the local user asynchronously
         /// </summary>
         /// <returns>A task containing the authentication result</returns>
-        public async Task<Result<IUser, string>> AuthenticateLocalUserAsync()
+        public async Task<Result<IAuthenticatedUser, string>> AuthenticateLocalUserAsync()
         {
             if (!_settings.SimulateAuthentication)
             {
                 var authenticatedUser = new LocalUser(_localUser.Name, _localUser.GamerTag, _localUser.UserID, UserAuthenticationStatus.Authenticated);
                 _localUser = authenticatedUser;
                 AuthenticationStatusChanged?.Invoke(UserAuthenticationStatus.Authenticated);
-                return new Result<IUser, string>(authenticatedUser);
+                return new Result<IAuthenticatedUser, string>(authenticatedUser);
             }
 
             // Simulate authentication process
@@ -71,7 +71,7 @@ namespace PlatformFacade.Editor
             _localUser = successUser;
             AuthenticationStatusChanged?.Invoke(UserAuthenticationStatus.Authenticated);
 
-            return new Result<IUser, string>(successUser);
+            return new Result<IAuthenticatedUser, string>(successUser);
         }
 
         /// <summary>

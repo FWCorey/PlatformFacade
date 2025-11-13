@@ -24,13 +24,13 @@ namespace PlatformFacade
         /// Gets the current local user
         /// </summary>
         /// <returns>The local user if available, null otherwise</returns>
-        IUser GetLocalUser();
+        IAuthenticatedUser GetLocalUser();
         
         /// <summary>
         /// Authenticates the local user asynchronously
         /// </summary>
         /// <returns>A task containing the authentication result</returns>
-        Task<Result<IUser, string>> AuthenticateLocalUserAsync();
+        Task<Result<IAuthenticatedUser, string>> AuthenticateLocalUserAsync();
         
         /// <summary>
         /// Gets a readonly reference to the local user's friendlist

@@ -16,9 +16,12 @@ namespace PlatformFacade
         /// The unique identifier for the user
         /// </summary>
         ulong UserID { get; }
-        
+    }
+
+    public interface IAuthenticatedUser : IUser
+    {
         /// <summary>
-        /// The authentication status of the user. See <see cref="UserAuthenticationStatus"/> for possible values.
+        /// The authentication status of the user
         /// </summary>
         UserAuthenticationStatus AuthenticationStatus { get; }
     }
