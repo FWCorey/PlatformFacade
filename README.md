@@ -18,15 +18,6 @@ PlatformFacade implements the Facade design pattern to create a unified interfac
 ### Currently Implemented
 - **EditorPlatform**: Mock implementation for Unity Editor development and testing
 
-### Planned Support
-- Steam
-- Epic Games Store
-- PlayStation Network
-- Xbox Live
-- Nintendo Switch Online
-- iOS Game Center
-- Google Play Games
-
 ## Installation
 
 1. Add the package to your Unity project via Package Manager
