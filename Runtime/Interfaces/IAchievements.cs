@@ -84,4 +84,9 @@ namespace PlatformFacade
         /// <returns>A task containing the result of the reset operation</returns>
         Task<Result<bool, string>> ResetAchievementsAsync();
     }
+
+    public interface IPopulatableAchievements : IAchievements {
+        
+        void PopulateAchievements(IReadOnlyList<IAchievement> achievements);
+    }
 }

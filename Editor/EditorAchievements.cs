@@ -9,7 +9,7 @@ namespace PlatformFacade.Editor
     /// <summary>
     /// Editor implementation of IAchievements providing mock achievement services for Unity Editor development and testing
     /// </summary>
-    public class EditorAchievements : IAchievements
+    public class EditorAchievements : IPopulatableAchievements
     {
         private readonly EditorPlatformSettings _settings;
         private readonly Dictionary<string, EditorAchievement> _achievements;
@@ -17,7 +17,7 @@ namespace PlatformFacade.Editor
         /// <summary>
         /// Gets whether achievements are supported on the current platform
         /// </summary>
-        public bool IsSupported => true;
+        public bool IsSupported => false;
 
         /// <summary>
         /// Event fired when an achievement is unlocked
@@ -299,6 +299,26 @@ namespace PlatformFacade.Editor
 
             Debug.Log("All achievements have been reset");
             return new Result<bool, string>(true);
+        }
+
+        public void PopulateAchievements(IReadOnlyList<IAchievement> achievements)
+        {
+            _achievements.Clear();
+            foreach (var achievement in achievements)
+            {
+                var editorAchievement = new EditorAchievement(
+                    achievement.AchievementID,
+                    achievement.DisplayName,
+                    achievement.Description,
+                    achievement.IsHidden
+                )
+                {
+                    IsUnlocked = achievement.IsUnlocked,
+                    Progress = achievement.Progress,
+                    UnlockedTime = achievement.UnlockedTime
+                };
+                _achievements.Add(achievement.AchievementID, editorAchievement);
+            }
         }
     }
 }
