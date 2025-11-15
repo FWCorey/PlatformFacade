@@ -195,7 +195,9 @@ namespace PlatformFacade.Editor
             _leaderboards.Clear();
 
             // Create a sample leaderboard
-            var sampleLeaderboard = new EditorLeaderboard(1001, "High Scores");
+            var mockLeaderboardName = "High Scores";
+            var id = GenerateLeaderboardID(mockLeaderboardName);
+            var sampleLeaderboard = new EditorLeaderboard(id, mockLeaderboardName);
             
             // Add mock entries
             var mockEntries = new[]
@@ -213,7 +215,7 @@ namespace PlatformFacade.Editor
                 sampleLeaderboard.AddEntry(entry);
             }
 
-            _leaderboards[1001] = sampleLeaderboard;
+            _leaderboards[id] = sampleLeaderboard;
         }
 
         private async Task SimulateNetworkDelay()
@@ -227,5 +229,15 @@ namespace PlatformFacade.Editor
                 }
             }
         }
+
+        public async Task<Result<ulong, string>> GetLeaderboardID(string leaderboardName) {
+            await SimulateNetworkDelay();
+            if (string.IsNullOrEmpty(leaderboardName)) {
+                return new Result<ulong, string>("Leaderboard name cannot be null or empty");
+            }
+            return new Result<ulong, string>(GenerateLeaderboardID(leaderboardName));
+        }
+
+        private ulong GenerateLeaderboardID(string name) => (uint)name.GetHashCode();
     }
 }

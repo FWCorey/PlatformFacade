@@ -2,11 +2,13 @@ using System;
 using System.Threading.Tasks;
 
 namespace PlatformFacade {
+
     /// <summary>
     /// Provides leaderboard services across gaming platforms including score submission,
     /// leaderboard retrieval, and user ranking queries
     /// </summary>
     public interface ILeaderboards {
+
         /// <summary>
         /// Event fired when a leaderboard is updated with new scores
         /// </summary>
@@ -72,5 +74,12 @@ namespace PlatformFacade {
         /// <param name="endRank">The ending rank (1-based, inclusive)</param>
         /// <returns>A task containing the leaderboard entries if available, error message otherwise</returns>
         Task<Result<ILeaderboard, string>> GetLeaderboardByRangeAsync(ulong leaderboardID, int startRank, int endRank);
+
+        /// <summary>
+        /// Retrieves the unique identifier for the specified leaderboard.
+        /// </summary>
+        /// <param name="leaderboardName">The name of the leaderboard whose identifier is to be retrieved. Cannot be null or empty.</param>
+        /// <returns>A task containing the leaderboard id if available, error message otherwise</returns>
+        Task<Result<ulong, string>> GetLeaderboardID(string leaderboardName);
     }
 }
