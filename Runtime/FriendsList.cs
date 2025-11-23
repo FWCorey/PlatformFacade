@@ -4,7 +4,8 @@ using System.Collections.Generic;
 namespace PlatformFacade
 {
     /// <summary>
-    /// A concrete dummy implementation of IFriendsList providing readonly access to friends
+    /// A concrete basic implementation of IFriendsList providing readonly access to friends.
+    /// <remarks>This can be used as a base class</remarks>
     /// </summary>
     public class FriendsList : IFriendsList
     {
@@ -36,7 +37,7 @@ namespace PlatformFacade
         /// </summary>
         /// <param name="userID">The unique identifier of the friend</param>
         /// <returns>The friend if found, null otherwise</returns>
-        public IUser GetFriend(ulong userID)
+        public virtual IUser GetFriend(ulong userID)
         {
             for (int i = 0; i < _friends.Count; i++)
             {
@@ -53,7 +54,7 @@ namespace PlatformFacade
         /// </summary>
         /// <param name="isOnline">True to get authenticated friends, false for unauthenticated friends</param>
         /// <param name="results">List to populate with matching friends (cleared before use)</param>
-        public void GetFriendsByStatus(bool isOnline, List<IUser> results)
+        public virtual void GetFriendsByStatus(bool isOnline, List<IUser> results)
         {
             results.Clear();
             
