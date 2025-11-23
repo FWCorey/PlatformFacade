@@ -42,7 +42,9 @@ namespace PlatformFacade.Editor
         /// </summary>
         public IAchievements Achievements => _achievements;
 
+#pragma warning disable CS0067
         public event Action<bool> OverlayActivated;
+#pragma warning restore CS0067
 
         /// <summary>
         /// Initializes a new instance of the EditorPlatform class
@@ -59,6 +61,12 @@ namespace PlatformFacade.Editor
             _storage = new EditorStorage(_settings);
             _leaderboards = new EditorLeaderboards(_settings);
             _achievements = new EditorAchievements(_settings);
+            EditorApplication.wantsToQuit += OnEditorWantsToQuit; // Allow cleanup on editor quit
+        }
+
+        private bool OnEditorWantsToQuit() {
+            OverlayActivated?.Invoke(true);
+            return true;
         }
 
         /// <summary>
