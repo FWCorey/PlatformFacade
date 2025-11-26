@@ -2,13 +2,13 @@
 
 ## Overview
 
-PlatformFacade provides automatic runtime initialization through the `PlatformManager` class, which uses reflection to discover and initialize IPlatform implementations at runtime.
+PlatformFacade provides automatic runtime initialization through the `PlatformManager` class, which uses reflection to discover and invoke `IPlatformInitializer` implementations that create `IPlatform` instances at runtime.
 
 ## Features
 
-- **Automatic Discovery**: Uses reflection to find IPlatform implementations
-- **Singleton Access**: Provides a static access point to the platform instance
-- **Error Handling**: Logs errors when multiple implementations are found
+- **Automatic Discovery**: Uses reflection to find `IPlatformInitializer` implementations
+- **Singleton Access**: Provides a static access point to the platform instance via `PlatformManager.Current`
+- **Resilient Initialization**: Tries multiple initializers and succeeds on the first valid platform instance
 - **Manual Control**: Supports manual initialization and platform setting
 
 ## Usage
@@ -101,33 +101,36 @@ PlatformManager.Initialize();
 When `Initialize()` is called, the PlatformManager:
 
 1. Scans all loaded assemblies for types implementing `IPlatformInitializer`
-2. Filters out interfaces, abstract classes, and MonoBehaviour types
-3. Checks the count of implementations:
-   - **0 implementations**: Logs an error and does not set initialized flag
-   - **1 implementation**: Creates an instance and calls `InitializePlatform()` which returns the platform
-   - **2+ implementations**: Logs an error and does not set initialized flag
-4. Sets the initialized flag only on successful platform creation
+2. Filters out interfaces, abstract classes, and `MonoBehaviour` types
+3. Logs all discovered initializer types
+4. If multiple implementations are found, logs a warning and tries each initializer in an unspecified order:
+   - Creates an instance via the parameterless constructor
+   - Calls `InitializePlatform()` and checks the result
+   - The first non-null `IPlatform` returned is accepted, sets the initialized flag, and stops
+5. If no implementations produce a platform instance, logs an error and leaves the initialized flag false
 
-Note: The PlatformManager always uses reflection for discovery, even if a DLL is loaded later. This ensures newly loaded assemblies are discovered on the next initialization attempt.
+Notes:
+- The order of trying initializers is not guaranteed. Each initializer should self-filter (e.g., by checking settings, platform availability, or SDK presence) and return null when not applicable.
+- Discovery happens on each initialization attempt. After a successful initialization, new assemblies are not considered unless you call `PlatformManager.Reset()`.
 
 ### Error Handling
 
 The PlatformManager handles several error scenarios:
 
-- **No Implementation Found**: Logs an error if no IPlatformInitializer implementation exists, keeps initialized flag false
-- **Multiple Implementations**: Logs an error listing all found implementations, keeps initialized flag false
-- **Constructor Failure**: Logs an error if the initializer constructor throws an exception, keeps initialized flag false
-- **Initialization Failure**: Logs an error if `InitializePlatform()` throws an exception, keeps initialized flag false
-- **Null Platform**: Logs an error if `InitializePlatform()` returns null, keeps initialized flag false
+- **No Implementation Found**: Logs an error if no `IPlatformInitializer` implementation exists; keeps initialized flag false
+- **Multiple Implementations**: Logs a warning listing all found implementations, then iterates through them; succeeds on the first non-null platform, otherwise logs a final error
+- **Constructor/Initialization Failure**: Logs an error if the initializer constructor or `InitializePlatform()` throws an exception; continues trying remaining implementations
+- **Null Platform**: Logs when an initializer returns null; continues trying remaining implementations
 - **Assembly Load Errors**: Gracefully handles assemblies that fail to load types
 
 ## Best Practices
 
-1. **Single Implementation**: Ensure only one IPlatformInitializer implementation is active in your build
-2. **Editor vs Runtime**: Use build constraints or assembly definitions to separate Editor and Runtime implementations
+1. **Have Only One Effective Initializer**: Ensure that, for a given build/run, only one initializer actually returns a platform (others should return null when not applicable)
+2. **Editor vs Runtime**: Use assembly definitions, scripting defines, or settings to separate Editor and Runtime implementations
 3. **Initialization Timing**: Initialize early (in Awake or Start) to ensure platform services are available
 4. **Error Checking**: Always check if `PlatformManager.Current` is null before using services
 5. **Single Responsibility**: Keep platform creation logic in the initializer, separate from service implementation
+6. **Self-Filtering Initializers**: Inside `InitializePlatform()`, perform environment checks (e.g., SDK present, feature enabled) and return null if not applicable
 
 ## Platform Implementation Guidelines
 
@@ -137,7 +140,8 @@ When creating a new platform implementation:
 2. Create an `IPlatformInitializer` factory implementation
 3. The initializer should be a pure factory with no platform-specific fields
 4. The initializer should have a parameterless constructor for reflection
-5. Use appropriate assembly definitions to control availability
+5. Perform applicability checks (settings/SDK/defines) and return null when not applicable
+6. Use appropriate assembly definitions to control availability
 
 Example:
 
@@ -179,29 +183,34 @@ namespace MyGame.Platform
 
 ### "No IPlatformInitializer implementation found"
 
-This error occurs when no class implementing IPlatformInitializer is found. Solutions:
+This error occurs when no class implementing `IPlatformInitializer` is found. Solutions:
 - Ensure you have a platform initializer in your project
 - Check that the initializer is in a loaded assembly
-- Verify the class is not abstract, not a MonoBehaviour, and has a parameterless constructor
+- Verify the class is not abstract, not a `MonoBehaviour`, and has a parameterless constructor
 - Ensure the initializer implements `IPlatformInitializer`
 
 ### "Multiple IPlatformInitializer implementations found"
 
-This error occurs when more than one IPlatformInitializer implementation is discovered. Solutions:
-- Remove unused platform initializers
-- Use assembly definitions to separate platforms by build target
-- Use preprocessor directives to conditionally compile platforms
+This message indicates more than one initializer was discovered. Behavior:
+- PlatformManager logs a warning and iterates through all implementations
+- Initialization succeeds on the first initializer that returns a non-null `IPlatform`
+
+Solutions:
+- Gate initializers by build target, scripting defines, or runtime checks so only one returns a platform
+- Use settings (e.g., an "Enabled" flag) to disable non-target initializers
+- Review logs to confirm which initializer succeeded
 
 ### "Initializer returned null platform instance"
 
-This error occurs when `InitializePlatform()` returns null. Solutions:
-- Ensure your initializer's `InitializePlatform()` method creates and returns a valid platform instance
-- Check that platform construction doesn't fail silently
+This occurs when `InitializePlatform()` returns null. Null can be expected when an initializer is not applicable. If no platform is initialized:
+- Ensure at least one initializer is applicable and returns a constructed platform
+- Check SDK availability or settings used by your initializer
+- Review console logs for which initializers were tried
 
 ### Platform services are null
 
 If `PlatformManager.Current` is null:
-- Check the Unity console for initialization errors
-- Verify a valid platform initializer exists
-- Ensure the initializer's `InitializePlatform()` method properly creates and returns the platform
+- Check the Unity console for initialization logs and errors
+- Verify a valid and applicable platform initializer exists
+- Ensure the initializer's `InitializePlatform()` method creates and returns the platform
 - Try calling `PlatformManager.Reset()` and then `PlatformManager.Initialize()` to retry initialization
