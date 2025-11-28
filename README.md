@@ -141,7 +141,11 @@ Main entry point providing access to all platform services.
 - Optional service (returns null on platforms without achievement support)
 
 ### IStorage
-Platform-specific data persistence (interface ready for implementation).
+- Asynchronous key-value data persistence
+- Write, read, and delete data by key
+- Check if data exists for a given key
+- List keys with optional filtering
+- Uses Railway Oriented Design for error handling
 
 ### IMultiplayerService
 Multiplayer functionality (interface ready for implementation).
