@@ -127,7 +127,9 @@ namespace PlatformFacade.Editor
             }
 
             // Mock friends list - in editor we'll just return a subset
-            var friendsLeaderboard = leaderboard.GetFriendsEntries(new ulong[] { _settings.UserID, 11111, 22222 }, maxEntries);
+            var c1 = new UlongGuidConverter { Low = 11111 };
+            var c2 = new UlongGuidConverter { Low = 22222 };
+            var friendsLeaderboard = leaderboard.GetFriendsEntries(new Guid[] { _settings.UserID, c1.Guid, c2.Guid }, maxEntries);
             return new Result<ILeaderboard, string>(friendsLeaderboard);
         }
 
@@ -147,7 +149,7 @@ namespace PlatformFacade.Editor
         /// <param name="leaderboardID">The unique identifier of the leaderboard</param>
         /// <param name="userID">The unique identifier of the user</param>
         /// <returns>A task containing the user's leaderboard entry if available, error message otherwise</returns>
-        public async Task<Result<ILeaderboardEntry, string>> GetUserEntryAsync(ulong leaderboardID, ulong userID)
+        public async Task<Result<ILeaderboardEntry, string>> GetUserEntryAsync(ulong leaderboardID, Guid userID)
         {
             await SimulateNetworkDelay();
 
@@ -199,14 +201,21 @@ namespace PlatformFacade.Editor
             var id = GenerateLeaderboardID(mockLeaderboardName);
             var sampleLeaderboard = new EditorLeaderboard(id, mockLeaderboardName);
             
+            // Create mock user IDs using the converter
+            var c1 = new UlongGuidConverter { Low = 99999 };
+            var c2 = new UlongGuidConverter { Low = 88888 };
+            var c3 = new UlongGuidConverter { Low = 77777 };
+            var c4 = new UlongGuidConverter { Low = 11111 };
+            var c5 = new UlongGuidConverter { Low = 22222 };
+            
             // Add mock entries
             var mockEntries = new[]
             {
-                new EditorLeaderboardEntry(new LocalUser("TopPlayer", "Pro1", 99999, UserAuthenticationStatus.Authenticated), 1, 10000),
-                new EditorLeaderboardEntry(new LocalUser("SecondPlace", "Pro2", 88888, UserAuthenticationStatus.Authenticated), 2, 9500),
-                new EditorLeaderboardEntry(new LocalUser("ThirdPlace", "Pro3", 77777, UserAuthenticationStatus.Authenticated), 3, 9000),
-                new EditorLeaderboardEntry(new LocalUser("Friend One", "Friend1", 11111, UserAuthenticationStatus.Authenticated), 4, 8500),
-                new EditorLeaderboardEntry(new LocalUser("Friend Two", "Friend2", 22222, UserAuthenticationStatus.Authenticated), 5, 8000),
+                new EditorLeaderboardEntry(new LocalUser("TopPlayer", "Pro1", c1.Guid, UserAuthenticationStatus.Authenticated), 1, 10000),
+                new EditorLeaderboardEntry(new LocalUser("SecondPlace", "Pro2", c2.Guid, UserAuthenticationStatus.Authenticated), 2, 9500),
+                new EditorLeaderboardEntry(new LocalUser("ThirdPlace", "Pro3", c3.Guid, UserAuthenticationStatus.Authenticated), 3, 9000),
+                new EditorLeaderboardEntry(new LocalUser("Friend One", "Friend1", c4.Guid, UserAuthenticationStatus.Authenticated), 4, 8500),
+                new EditorLeaderboardEntry(new LocalUser("Friend Two", "Friend2", c5.Guid, UserAuthenticationStatus.Authenticated), 5, 8000),
                 new EditorLeaderboardEntry(new LocalUser(_settings.UserName, _settings.GamerTag, _settings.UserID, UserAuthenticationStatus.Authenticated), 6, 7500),
             };
 

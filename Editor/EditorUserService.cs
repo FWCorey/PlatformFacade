@@ -106,7 +106,7 @@ namespace PlatformFacade.Editor
         /// </summary>
         /// <param name="userID">The unique identifier of the user</param>
         /// <returns>A task containing the thumbnail portrait as Texture2D</returns>
-        public async Task<Result<Texture2D, string>> GetUserPortraitThumbnailAsync(ulong userID)
+        public async Task<Result<Texture2D, string>> GetUserPortraitThumbnailAsync(Guid userID)
         {
             await SimulateNetworkDelay();
             
@@ -140,7 +140,7 @@ namespace PlatformFacade.Editor
         /// </summary>
         /// <param name="userID">The unique identifier of the user</param>
         /// <returns>A task containing the native resolution portrait as Texture2D</returns>
-        public async Task<Result<Texture2D, string>> GetUserPortraitNativeAsync(ulong userID)
+        public async Task<Result<Texture2D, string>> GetUserPortraitNativeAsync(Guid userID)
         {
             await SimulateNetworkDelay();
             
@@ -193,12 +193,16 @@ namespace PlatformFacade.Editor
 
         private void InitializeFriendsList()
         {
-            // Create some mock friends for editor testing
+            // Create some mock friends for editor testing using UlongGuidConverter
+            var c1 = new UlongGuidConverter { Low = 11111 };
+            var c2 = new UlongGuidConverter { Low = 22222 };
+            var c3 = new UlongGuidConverter { Low = 33333 };
+            
             IUser[] mockFriends = new IUser[]
             {
-                new LocalUser("Friend One", "Friend1", 11111, UserAuthenticationStatus.Authenticated),
-                new LocalUser("Friend Two", "Friend2", 22222, UserAuthenticationStatus.NotAuthenticated),
-                new LocalUser("Friend Three", "Friend3", 33333, UserAuthenticationStatus.Authenticated)
+                new LocalUser("Friend One", "Friend1", c1.Guid, UserAuthenticationStatus.Authenticated),
+                new LocalUser("Friend Two", "Friend2", c2.Guid, UserAuthenticationStatus.NotAuthenticated),
+                new LocalUser("Friend Three", "Friend3", c3.Guid, UserAuthenticationStatus.Authenticated)
             };
 
             _friendsList = new FriendsList(mockFriends);
