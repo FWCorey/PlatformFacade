@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -37,7 +38,7 @@ namespace PlatformFacade
         /// </summary>
         /// <param name="userID">The unique identifier of the friend</param>
         /// <returns>The friend if found, null otherwise</returns>
-        public virtual IUser GetFriend(ulong userID)
+        public virtual IUser GetFriend(Guid userID)
         {
             for (int i = 0; i < _friends.Count; i++)
             {
