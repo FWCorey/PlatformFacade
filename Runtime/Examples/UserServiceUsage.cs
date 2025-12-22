@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -110,7 +111,7 @@ namespace PlatformFacade.Examples
         /// <summary>
         /// Example: Load a specific friend's portrait using Railway Oriented Design
         /// </summary>
-        public async Task LoadFriendPortraitAsync(ulong friendUserID)
+        public async Task LoadFriendPortraitAsync(Guid friendUserID)
         {
             var friendThumbnailResult = await _userService.GetUserPortraitThumbnailAsync(friendUserID);
             if (friendThumbnailResult.IsSuccess)
