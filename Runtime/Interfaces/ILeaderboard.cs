@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace PlatformFacade
@@ -29,6 +30,6 @@ namespace PlatformFacade
         /// </summary>
         /// <param name="userID">The unique identifier of the user</param>
         /// <returns>The leaderboard entry for the user, null if not found</returns>
-        ILeaderboardEntry GetEntryByUser(ulong userID);
+        ILeaderboardEntry GetEntryByUser(Guid userID);
     }
 }

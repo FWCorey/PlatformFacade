@@ -64,7 +64,7 @@ namespace PlatformFacade {
         /// <param name="leaderboardID">The unique identifier of the leaderboard</param>
         /// <param name="userID">The unique identifier of the user</param>
         /// <returns>A task containing the user's leaderboard entry if available, error message otherwise</returns>
-        Task<Result<ILeaderboardEntry, string>> GetUserEntryAsync(ulong leaderboardID, ulong userID);
+        Task<Result<ILeaderboardEntry, string>> GetUserEntryAsync(ulong leaderboardID, Guid userID);
 
         /// <summary>
         /// Gets leaderboard entries within a specific rank range

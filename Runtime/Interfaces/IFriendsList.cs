@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace PlatformFacade
@@ -12,7 +13,7 @@ namespace PlatformFacade
         /// </summary>
         /// <param name="userID">The unique identifier of the friend</param>
         /// <returns>The friend if found, null otherwise</returns>
-        IUser GetFriend(ulong userID);
+        IUser GetFriend(Guid userID);
         
         /// <summary>
         /// Gets friends by their online status (based on authentication status)

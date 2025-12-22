@@ -49,7 +49,7 @@ namespace PlatformFacade
         /// </summary>
         /// <param name="userID">The unique identifier of the user</param>
         /// <returns>A task containing the thumbnail portrait as Texture2D</returns>
-        Task<Result<Texture2D, string>> GetUserPortraitThumbnailAsync(ulong userID);
+        Task<Result<Texture2D, string>> GetUserPortraitThumbnailAsync(Guid userID);
         
         /// <summary>
         /// Gets the local user's portrait at native resolution for the current platform
@@ -62,7 +62,7 @@ namespace PlatformFacade
         /// </summary>
         /// <param name="userID">The unique identifier of the user</param>
         /// <returns>A task containing the native resolution portrait as Texture2D</returns>
-        Task<Result<Texture2D, string>> GetUserPortraitNativeAsync(ulong userID);
+        Task<Result<Texture2D, string>> GetUserPortraitNativeAsync(Guid userID);
         
         /// <summary>
         /// Refreshes the friendlist from the platform
