@@ -17,7 +17,7 @@ namespace PlatformFacade.Editor
         /// <summary>
         /// Gets whether achievements are supported on the current platform
         /// </summary>
-        public bool IsSupported => false;
+        public bool IsSupported => _settings.EditorPlatformEnabled && _achievements.Count > 0;
 
         /// <summary>
         /// Event fired when an achievement is unlocked
@@ -49,7 +49,7 @@ namespace PlatformFacade.Editor
         }
 
         /// <summary>
-        /// Initializes default sample achievements for testing
+        /// Initializes default sample achievements for testing and enables achievements
         /// </summary>
         private void InitializeDefaultAchievements()
         {
@@ -97,7 +97,7 @@ namespace PlatformFacade.Editor
             
             if (_settings?.SimulateNetworkDelay ?? false)
             {
-                int delayMs = (int)(_settings.GetRandomNetworkDelay() * 1000);
+                int delayMs = Mathf.RoundToInt(_settings.GetRandomNetworkDelay() * 1000);
                 await Task.Delay(delayMs);
             }
         }
