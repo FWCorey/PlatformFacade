@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +59,7 @@ namespace PlatformFacade.Editor
         /// </summary>
         /// <param name="userID">The unique identifier of the user</param>
         /// <returns>The leaderboard entry for the user, null if not found</returns>
-        public ILeaderboardEntry GetEntryByUser(ulong userID)
+        public ILeaderboardEntry GetEntryByUser(Guid userID)
         {
             return _entries.FirstOrDefault(entry => entry.User.UserID == userID);
         }
@@ -78,7 +79,7 @@ namespace PlatformFacade.Editor
         /// </summary>
         /// <param name="userID">The user ID to update</param>
         /// <param name="newEntry">The new entry for the user</param>
-        public void UpdateUserScore(ulong userID, EditorLeaderboardEntry newEntry)
+        public void UpdateUserScore(Guid userID, EditorLeaderboardEntry newEntry)
         {
             // Remove existing entry if present
             for (int i = _entries.Count - 1; i >= 0; i--)
@@ -146,7 +147,7 @@ namespace PlatformFacade.Editor
         /// <param name="friendUserIDs">Array of friend user IDs</param>
         /// <param name="maxEntries">Maximum number of entries to return</param>
         /// <returns>A new leaderboard with friend entries</returns>
-        public EditorLeaderboard GetFriendsEntries(ulong[] friendUserIDs, int maxEntries)
+        public EditorLeaderboard GetFriendsEntries(Guid[] friendUserIDs, int maxEntries)
         {
             var friendsLeaderboard = new EditorLeaderboard(_leaderboardID, $"{_displayName} (Friends)");
             

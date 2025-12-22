@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace PlatformFacade.Editor
@@ -12,7 +13,7 @@ namespace PlatformFacade.Editor
         [Header("User Settings")]
         [SerializeField] private string _userName = "EditorUser";
         [SerializeField] private string _gamerTag = "DevUser";
-        [SerializeField] private ulong _userID = 12345;
+        [SerializeField] private string _userIDString = "00000000-0000-0000-0000-000000003039"; // 12345 in Guid format
         [SerializeField] private Texture2D _userPortrait;
         
         [Header("Mock Data Settings")]
@@ -35,7 +36,17 @@ namespace PlatformFacade.Editor
         /// <summary>
         /// Gets the configured user ID for the editor user
         /// </summary>
-        public ulong UserID => _userID;
+        public Guid UserID
+        {
+            get
+            {
+                if (Guid.TryParse(_userIDString, out var guid))
+                    return guid;
+                // Fallback: convert a simple number to Guid using the converter
+                var converter = new UlongGuidConverter { Low = 12345 };
+                return converter.Guid;
+            }
+        }
 
         /// <summary>
         /// Gets the configured user portrait texture
@@ -78,7 +89,7 @@ namespace PlatformFacade.Editor
             if (!_simulateNetworkDelay)
                 return 0f;
             
-            return Random.Range(_networkDelayMin, _networkDelayMax);
+            return UnityEngine.Random.Range(_networkDelayMin, _networkDelayMax);
         }
     }
 }
