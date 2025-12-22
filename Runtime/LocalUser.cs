@@ -1,3 +1,5 @@
+using System;
+
 namespace PlatformFacade
 {
     /// <summary>
@@ -15,9 +17,9 @@ namespace PlatformFacade
         public string GamerTag { get; }
         
         /// <summary>
-        /// The unique identifier for the user
+        /// The unique identifier for the user (128-bit)
         /// </summary>
-        public ulong UserID { get; }
+        public Guid UserID { get; }
         
         /// <summary>
         /// The authentication status of the user
@@ -31,7 +33,7 @@ namespace PlatformFacade
         /// <param name="gamerTag">The platform-specific gamertag of the user</param>
         /// <param name="userID">The unique identifier for the user</param>
         /// <param name="authenticationStatus">The authentication status of the user</param>
-        public LocalUser(string name, string gamerTag, ulong userID, UserAuthenticationStatus authenticationStatus)
+        public LocalUser(string name, string gamerTag, Guid userID, UserAuthenticationStatus authenticationStatus)
         {
             Name = name;
             GamerTag = gamerTag;
