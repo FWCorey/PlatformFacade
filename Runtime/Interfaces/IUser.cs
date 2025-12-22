@@ -1,3 +1,5 @@
+using System;
+
 namespace PlatformFacade
 {
     public interface IUser
@@ -13,9 +15,9 @@ namespace PlatformFacade
         string GamerTag { get; }
         
         /// <summary>
-        /// The unique identifier for the user
+        /// The unique identifier for the user (128-bit, supports all platforms)
         /// </summary>
-        ulong UserID { get; }
+        Guid UserID { get; }
     }
 
     public interface IAuthenticatedUser : IUser
