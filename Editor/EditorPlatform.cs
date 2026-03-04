@@ -42,9 +42,18 @@ namespace PlatformFacade.Editor
         /// </summary>
         public IAchievements Achievements => _achievements;
 
+        /// <summary>
+        /// Gets a value indicating whether the editor platform is simulating a handheld (mobile) output device.
+        /// </summary>
         public bool IsUsingHandheld => false;
 
 #pragma warning disable CS0067
+        /// <summary>
+        /// Occurs when the simulated output device changes in the editor (for example, between handheld and desktop).
+        /// </summary>
+        /// <remarks>
+        /// The <c>bool</c> argument is <c>true</c> when handheld output is active; otherwise, it is <c>false</c>.
+        /// </remarks>
         public event Action<bool> OutputDeviceChanged;
         public event Action<bool> OverlayActivated;
 #pragma warning restore CS0067
