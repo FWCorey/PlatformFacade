@@ -40,10 +40,14 @@ namespace PlatformFacade
         bool IsUsingHandheld { get; }
 
         /// <summary>
-        /// Occurs when the output device changes, providing the new state of the device as a boolean value.
+        /// Occurs when the handheld usage state changes (for example, when switching between handheld and docked mode).
         /// </summary>
-        /// <remarks>Subscribers can use this event to respond to changes in the output device, such as
-        /// updating UI elements or reconfiguring audio routing. The value indicates the new value of <see cref="IsUsingHandheld"/></remarks>
+        /// <remarks>
+        /// Subscribers can use this event to respond to changes in whether the platform is currently being used in handheld
+        /// mode, such as updating UI layout, adjusting performance profiles, or reconfiguring audio and display settings.
+        /// The Boolean parameter passed to handlers is the new value of <see cref="IsUsingHandheld"/> (<see langword="true"/>
+        /// if the platform is now using handheld mode, <see langword="false"/> otherwise).
+        /// </remarks>
         public event Action<bool> OutputDeviceChanged;
 
         /// <summary>
