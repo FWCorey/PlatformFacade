@@ -67,6 +67,7 @@ namespace PlatformFacade
                         !type.IsInterface && 
                         !type.IsAbstract &&
                         !typeof(MonoBehaviour).IsAssignableFrom(type)) // Exclude MonoBehaviour types
+                    .OrderBy(type => type.FullName.Contains("Editor") ? 1 : 0) // Editor initializers last
                     .ToList();
 
                 if (initializerTypes.Count == 0)
